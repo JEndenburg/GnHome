@@ -1,0 +1,11 @@
+{
+  "name": "gnhome-interface",
+  "version": "1.0.0",
+  "description": "Gnhome widget module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeroen Endenburg",
+  "license": "ISC"
+}
