@@ -1,5 +1,8 @@
 const express = require("express");
+const widgetLoader = require("./lib/widget-loader");
 const port = 8000;
+
+let modules = widgetLoader.loadWidgets(__dirname + "/widgets");
 
 const app = express();
 
