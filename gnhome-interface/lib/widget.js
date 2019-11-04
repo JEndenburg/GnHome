@@ -24,7 +24,7 @@ class Widget
      * @param {string} query A JSON query
      * @returns {Response} A response
      */
-    onQuery(query) { return new Response(501, "Not Implemented"); }
+    query(query) { return new Response(501, "Not Implemented"); }
 }
 
 

@@ -18,6 +18,8 @@ type PDA
 type Widget
 {
     name: String
+    version: String
+    description: String
 }
 
 `);
@@ -49,8 +51,12 @@ function getWidgetByName(name, widgetList = this.getWidgetList())
     if(widgetList[name] == undefined)
         return null;
 
+    const widget = widgetList[name];
+
     return {
-        name: name,
+        name: widget.name,
+        version: widget.version,
+        description: widget.description,
     };
 }
 
