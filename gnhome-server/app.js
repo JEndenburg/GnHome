@@ -1,8 +1,9 @@
 const express = require("express");
 const widgetLoader = require("./lib/widget-loader");
+const interface = require("gnhome-interface");
 const port = 8000;
 
-let modules = widgetLoader.loadWidgets(__dirname + "/widgets");
+widgetLoader.loadWidgets(__dirname + "/widgets");
 
 const app = express();
 
@@ -17,5 +18,13 @@ app.use((req, res, next) => {
     res.status(404).send("404 - Page not found");
 });
 
-
 app.listen(port, () => console.log(`Now listening on port ${port}!`));
+
+function runInterfaces()
+{
+    let widgetList = interface.getWidgetList();
+    for(let name in widgetList)
+        widgetList[name].run();
+}
+
+setInterval(runInterfaces, 1);
