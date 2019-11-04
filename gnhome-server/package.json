@@ -1,0 +1,25 @@
+{
+  "name": "gnhome-server",
+  "version": "1.0.0",
+  "description": "Gnhome Domain",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Gnhome"
+  },
+  "keywords": [
+    "PDA",
+    "Personal",
+    "Digital",
+    "Assistant"
+  ],
+  "author": "Jeroen Endenburg",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.7.1",
+    "express": "^4.17.1"
+  }
+}
