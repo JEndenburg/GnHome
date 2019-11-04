@@ -1,6 +1,7 @@
 const express = require("express");
 const widgetLoader = require("./lib/widget-loader");
 const interface = require("gnhome-interface");
+const api = require("./lib/api/api");
 const port = 8000;
 
 widgetLoader.loadWidgets(__dirname + "/widgets");
@@ -12,6 +13,7 @@ app.use(express.static("static"));
 
 
 //TODO: Put Page rendering here.
+api(app, interface.getWidgetList);
 
 //Fallback in case of 404
 app.use((req, res, next) => {
