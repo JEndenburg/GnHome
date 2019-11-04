@@ -1,3 +1,4 @@
+const Response = require("./response");
 
 class Widget
 {
@@ -21,9 +22,9 @@ class Widget
     /**
      * Function to be run when receiving a query.
      * @param {string} query A JSON query
-     * @returns {string} A JSON response
+     * @returns {Response} A response
      */
-    onQuery(query) { return ""; }
+    onQuery(query) { return new Response(501, "Not Implemented"); }
 }
 
 

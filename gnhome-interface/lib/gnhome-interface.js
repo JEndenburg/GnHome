@@ -1,4 +1,5 @@
 const Widget = require("./widget");
+const Response = require("./response");
 
 /** @type {Object.<string, Widget>} */
 let _widgetList = [];
@@ -34,3 +35,4 @@ function getWidgetList()
 exports = module.exports = createWidget;
 
 exports.getWidgetList = getWidgetList;
+exports.Response = Response;
