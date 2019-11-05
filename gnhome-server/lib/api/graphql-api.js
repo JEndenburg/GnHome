@@ -21,6 +21,14 @@ type Widget
     name: String
     version: String
     description: String
+    status: Status
+}
+
+type Status
+{
+    statusCode: Int
+    statusMessage: String
+    responseJson: String
 }
 
 `);

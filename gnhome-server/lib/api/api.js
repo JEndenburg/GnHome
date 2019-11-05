@@ -1,5 +1,6 @@
 const express = require("express");
 const gnhomeInterface = require("gnhome-interface");
+const Response = gnhomeInterface.Response;
 
 class API
 {
@@ -29,6 +30,7 @@ class API
             name: widget.name,
             description: widget.description,
             version: widget.version,
+            status: this.getStatusFromResponse(widget.status),
         };
     }
 
@@ -45,6 +47,19 @@ class API
         }
 
         return widgets;
+    }
+
+    /**
+     * 
+     * @param {Response} response 
+     */
+    getStatusFromResponse(response)
+    {
+        return {
+            statusCode: response.status,
+            statusMessage: response.message,
+            responseJson: JSON.stringify(response.content),
+        };
     }
 }
 
