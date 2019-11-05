@@ -1,0 +1,31 @@
+nav
+{
+    scrollbar-color: var(--nav-border-color) var(--nav-item-color);
+    scrollbar-width: 5px;
+    scrollbar-highlight-color: var(--nav-item-hover-color);
+}
+
+nav::-webkit-scrollbar
+{
+    width: 5px;
+}
+
+nav::-webkit-scrollbar-track
+{
+    background: var(--nav-item-color);
+}
+
+nav::-webkit-scrollbar-thumb
+{
+    background: var(--nav-border-color);
+}
+
+nav::-webkit-scrollbar-thumb:hover
+{
+    background: var(--nav-color);
+}
+
+nav::-webkit-scrollbar-thumb:active
+{
+    background: var(--nav-item-hover-color);
+}
