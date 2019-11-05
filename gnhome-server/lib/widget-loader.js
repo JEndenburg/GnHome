@@ -12,7 +12,7 @@ function loadWidgets(path)
 }
 
 /**
- * 
+ * @param {string} mainPath
  * @param {string[]} paths 
  */
 function searchWidgets(mainPath, paths)

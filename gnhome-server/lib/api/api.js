@@ -1,39 +1,51 @@
 const express = require("express");
-const graphQLAPI = require("./api-graphql");
+const gnhomeInterface = require("gnhome-interface");
 
-const response = {
-    [404] : { code: 404, message: "Page not found." },
-};
-
-/**
- * 
- * @param {express.Express} app 
- * @param {Function} getWidgetList
- */
-function init(app, getWidgetList)
+class API
 {
-    graphQLAPI(app, getWidgetList);
+    constructor()
+    {
+    }
 
-    app.use("/api", (req, res, next) => {
-        /** @type {String} */
-        let communicationLanguage = req.query["lang"] || "graphql";
+    getPDA()
+    {
+        return {
+            widgets: this.getWidgets(),
+        };
+    }
+
+    /**
+     * 
+     * @param {String} name 
+     * @param {gnhomeInterface.widgetList}
+     */
+    getWidgetByName(name, widgetList = gnhomeInterface.getWidgetList())
+    {
+        if(widgetList[name] == undefined)
+            return null;
         
-        if(req.path.length > 1)
+        const widget = widgetList[name];
+        return {
+            name: widget.name,
+            description: widget.description,
+            version: widget.version,
+        };
+    }
+
+    getWidgets()
+    {
+        let widgets = [];
+        const widgetList = gnhomeInterface.getWidgetList();
+        let index = 0;
+
+        for(let name in widgetList)
         {
-            next();
-            return;
+            widgets[index] = this.getWidgetByName(name, widgetList);
+            index++;
         }
 
-        switch(communicationLanguage.toLowerCase())
-        {
-            case "graphql":
-                res.redirect("/api/graphql");
-                break;
-            default:
-                res.status(404).json(response[404]);
-                break;
-        }
-    });
+        return widgets;
+    }
 }
 
-module.exports = init;
+module.exports = API
