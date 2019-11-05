@@ -1,8 +1,10 @@
 :root
 {
-    --header-height: 40px;
-    --nav-width: 20vw;
+    --header-height: 4vh;
     --footer-height: 24px;
+
+    --nav-width: 20vw;
+    --nav-offset: 0px;
 }
 
 body
@@ -10,7 +12,7 @@ body
     margin: 0;
     background-color: var(--background-color);
     background-image: url("../img/grid.png");
-    color: var(--dark-text-color);
+    color: var(--main-text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -20,10 +22,10 @@ header
     height: var(--header-height);
     width: 100%;
     background-color: var(--primary-color);
-    color: var(--light-text-color);
-    font-size: 1.7rem;
+    color: var(--header-nav-text-color);
+    font-size: 2.5vh;
     font-weight: bold;
-    padding-left: 20px;
+    padding-left: 2vw;
     border-style: none none solid none;
     border-color: var(--primary-border-color);
     z-index: 10;
@@ -39,10 +41,13 @@ nav
     height: calc(100% - var(--header-height) - var(--footer-height));
     border-style: none solid none none;
     border-color: var(--nav-border-color);
-    color: var(--light-text-color);
+    color: var(--header-nav-text-color);
     z-index: 5;
     box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
     overflow-y: auto;
+
+    left: var(--nav-offset);
+    transition: left 0.2s;
 }
 
 nav hr
@@ -63,13 +68,53 @@ nav ul li
 {
     padding: 4px;
     padding-left: 1rem;
+    padding-bottom: 2px;
     margin-bottom: 4px;
-    height: 32px;
+    height: 34px;
     font-size: 1.1rem;
     background-color: var(--nav-item-color);
+    cursor: pointer;
+}
+
+nav ul li i.fa
+{
+    position: absolute;
+    right: 2px;
+    font-size: 1.4rem;
+    background-color: var(--nav-color);
+    width: 32px;
+    height: 27px;
+    padding-top: 5px;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 100%;
 }
 
 nav ul li:hover
+{
+    background-color: var(--nav-item-hover-color);
+}
+
+nav #nav-collapse
+{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--nav-item-color);
+    width: 30px;
+    height: 28px;
+    padding-left: 2px;
+    padding-bottom: 4px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.9rem;
+    border-radius: 100%;
+    transform: rotateY(180deg);
+    transition: transform 0.5s;
+    cursor: pointer;
+}
+
+nav #nav-collapse:hover
 {
     background-color: var(--nav-item-hover-color);
 }
@@ -87,11 +132,12 @@ footer
     position: fixed;
     bottom: 0;
     z-index: 7;
-    width: var(--nav-width);
-    color: var(--light-text-color);
-    border-style: solid solid none none;
+    width: 100%;
+    color: var(--header-nav-text-color);
+    border-style: solid none none none;
     border-color: var(--nav-border-color);
     height: var(--footer-height);
     background-color: var(--nav-color);
-    box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
+    box-shadow: 0px -4px 4px rgba(0,0,0,0.2);
+    text-align: center;
 }
