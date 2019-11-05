@@ -5,22 +5,14 @@ const Response = require("./response");
 let _widgetList = [];
 
 /**
- * 
- * @param {string} name 
- * @param {string} version 
- * @param {string} description 
- * @param {Function} execution 
+ * @param {Widget} widget
  */
-function createWidget(name, version, description, execution)
+function registerWidget(widget)
 {
-    let newWidget = new Widget(name, version, description, execution);
-    
-    if(_widgetList[name] == undefined)
-        _widgetList[name] = newWidget;
+    if(_widgetList[widget.name] == undefined)
+        _widgetList[widget.name] = widget;
     else
         throw `A widget with the name "${name}" already exists!`;
-    
-    return newWidget;
 }
 
 /**
@@ -32,7 +24,9 @@ function getWidgetList()
 }
 
 
-exports = module.exports = createWidget;
+exports = module.exports = {};
 
+exports.Widget = Widget;
+exports.registerWidget = registerWidget;
 exports.getWidgetList = getWidgetList;
 exports.Response = Response;

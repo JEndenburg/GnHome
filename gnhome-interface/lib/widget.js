@@ -8,23 +8,29 @@ class Widget
      * @param {string} description
      * @param {Function} execution
      */
-    constructor(name, version, description, execution)
+    constructor(name, version, description)
     {
-        if(!name || !description || !version  || !execution)
+        if(!name || !description || !version )
             throw "Constructor parameters may not be undefined";
             
-        this.name = name;
-        this.version = version;
-        this.description = description;
-        this.run = execution;
+        this._name = name;
+        this._version = version;
+        this._description = description;
     }
 
+    get name() { return this._name; }
+    get version() { return this._version; }
+    get description() { return this._description; }
+
     /**
-     * Function to be run when receiving a query.
-     * @param {string} query A JSON query
+     * Function to be run when receiving a get query.
      * @returns {Response} A response
      */
-    query(query) { return new Response(501, "Not Implemented"); }
+    get status() { return new Response(501, "Not Implemented"); }
+
+    run()
+    {
+    }
 }
 
 
