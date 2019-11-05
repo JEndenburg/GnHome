@@ -1,0 +1,96 @@
+:root
+{
+    --header-height: 40px;
+    --nav-width: 20vw;
+    --footer-height: 24px;
+}
+
+body
+{
+    margin: 0;
+    background-color: var(--background-color);
+    background-image: url("../img/grid.png");
+    color: var(--dark-text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header
+{
+    position: fixed;
+    height: var(--header-height);
+    width: 100%;
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    font-size: 1.7rem;
+    font-weight: bold;
+    padding-left: 20px;
+    border-style: none none solid none;
+    border-color: var(--primary-border-color);
+    z-index: 10;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
+}
+
+nav
+{
+    position: fixed;
+    background-color: var(--nav-color);
+    width: var(--nav-width);
+    top: var(--header-height);
+    height: calc(100% - var(--header-height) - var(--footer-height));
+    border-style: none solid none none;
+    border-color: var(--nav-border-color);
+    color: var(--light-text-color);
+    z-index: 5;
+    box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
+}
+
+nav hr
+{
+    color: var(--nav-border-color);
+}
+
+nav ul
+{
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-top: 0.2rem;
+}
+
+nav ul li
+{
+    padding: 4px;
+    padding-left: 1rem;
+    margin-bottom: 4px;
+    height: 32px;
+    font-size: 1.1rem;
+    background-color: var(--nav-item-color);
+}
+
+nav ul li:hover
+{
+    background-color: var(--nav-item-hover-color);
+}
+
+#nav-header
+{
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+footer
+{
+    position: fixed;
+    bottom: 0;
+    z-index: 7;
+    width: var(--nav-width);
+    color: var(--light-text-color);
+    border-style: solid solid none none;
+    border-color: var(--nav-border-color);
+    height: var(--footer-height);
+    background-color: var(--nav-color);
+    box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
+}

@@ -1,0 +1,15 @@
+:root
+{
+    --primary-color: rgb(255, 136, 24);
+    --primary-border-color: rgb(185, 102, 24);
+
+    --nav-color: rgb(73, 68, 62);
+    --nav-border-color: rgb(54, 52, 49);
+    --nav-item-color: rgb(85, 79, 71);
+    --nav-item-hover-color: rgb(114, 103, 89);
+
+    --background-color: rgb(255, 249, 241);
+
+    --dark-text-color: rgb(21, 19, 43);
+    --light-text-color: rgb(247, 249, 255);
+}

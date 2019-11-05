@@ -18,25 +18,35 @@ let graphQL = new APIGraphQL(app);
 app.use((req, res, next) => {
     let path = "pages/" + req.path;
 
-    res.render(path, (error, html) => {
-        if(error == null)
-            res.send(html);
-        else
-        {
-            path += "/index";
-            res.render(path, (error2, html2) => {
-                if(error2 == null)
-                    res.send(html2);
-                else
-                    next();
-            })
-        }
-    });
-})
+    try
+    {
+        res.render(path, (error, html) => {
+            if(error == null)
+                res.send(html);
+            else
+            {
+                path += "/index";
+                res.render(path, (error2, html2) => {
+                    if(error2 == null)
+                        res.send(html2);
+                    else
+                        next(error2);
+                })
+            }
+        });
+    }
+    catch(exception)
+    {
+        next();
+    }
+});
 
 //Fallback in case of 404
 app.use((req, res, next) => {
-    res.status(404).send("404 - Page not found: " + req.path);
+    if(req.path.indexOf(/.*\..+/) == -1)
+        res.status(404).send("404 - Page not found: " + req.path);
+    else
+        next();
 });
 
 app.listen(port, () => console.log(`Now listening on port ${port}!`));
