@@ -21,10 +21,11 @@ type Widget
     name: String
     version: String
     description: String
-    status: Status
+    status: Response
+    html: Response
 }
 
-type Status
+type Response
 {
     statusCode: Int
     statusMessage: String

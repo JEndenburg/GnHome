@@ -30,7 +30,8 @@ class API
             name: widget.name,
             description: widget.description,
             version: widget.version,
-            status: this.getStatusFromResponse(widget.status),
+            status: this.parseResponseToObject(widget.status),
+            html: this.parseResponseToObject(widget.widgetHTML),
         };
     }
 
@@ -53,7 +54,7 @@ class API
      * 
      * @param {Response} response 
      */
-    getStatusFromResponse(response)
+    parseResponseToObject(response)
     {
         return {
             statusCode: response.status,

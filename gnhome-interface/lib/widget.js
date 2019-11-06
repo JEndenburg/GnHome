@@ -32,7 +32,7 @@ class Widget
     /**
      * Getter to respond with widget content's URL.
      */
-    get widgetURL() { return new Response(501, "Not Implemented") }
+    get widgetHTML() { return new Response(501, "Not Implemented") }
 
     /**
      * Shorthand for creating a response object.
