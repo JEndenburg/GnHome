@@ -11,7 +11,8 @@ widgetLoader.loadWidgets(__dirname + "/widgets");
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(express.static("static"));
+app.set("views", "site/views/");
+app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
 
