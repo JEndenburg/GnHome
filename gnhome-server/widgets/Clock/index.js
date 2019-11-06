@@ -10,7 +10,12 @@ class ClockWidget extends gnhomeInterface.Widget
     get status()
     {
         let date = new Date();
-        return new gnhomeInterface.Response(200, "OK", date.toLocaleTimeString());
+        return this.createResponse(200, "OK", date.toLocaleTimeString());
+    }
+
+    get widgetHTML()
+    {
+        return this.createResponse(200, "OK", this.getFileContent(__dirname + "/index.html").toString());
     }
 }
 
