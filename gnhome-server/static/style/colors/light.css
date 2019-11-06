@@ -7,9 +7,12 @@
     --nav-border-color: rgb(54, 52, 49);
     --nav-item-color: rgb(85, 79, 71);
     --nav-item-hover-color: rgb(114, 103, 89);
+    --nav-item-disabled-color: rgb(58, 58, 57);
 
-    --background-color: rgb(255, 249, 241);
+    --background-color: rgb(236, 228, 218);
 
     --main-text-color: rgb(21, 19, 43);
     --header-nav-text-color: rgb(247, 249, 255);
+    --darkmode-affected-text-color: rgb(21, 19, 43);
+    --disabled-text-color: rgb(84, 84, 87);
 }
