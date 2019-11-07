@@ -2,9 +2,8 @@ const express = require("express");
 const widgetLoader = require("./lib/widget-loader");
 const interface = require("gnhome-interface");
 const APIGraphQL = require("./lib/api/graphql-api");
-const api = require("./lib/api/api");
 const port = 8000;
-const ejs = require("ejs");
+const cors = require("cors");
 
 widgetLoader.loadWidgets(__dirname + "/widgets");
 
@@ -12,6 +11,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", "site/views/");
+app.use(cors());
 app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
