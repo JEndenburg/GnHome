@@ -1,3 +1,7 @@
+## Custom
+# output folder, usually generated content that can be replicated by another dev
+[Oo]utput
+
 ## Elm
 # elm-package generated files
 elm-stuff
