@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Html exposing(Html, div, text)
 import Http
-import Json.Decode as JSON exposing(Decoder)
+import Json.Decode as JSON exposing(Decoder, field, list, string)
 
 type Model
     = Loading
@@ -27,7 +27,7 @@ type alias Widget =
 
 
 graphqlURL =
-    "http://localhost:8000/api/graphql"
+    "http://localhost:8000/api/graphql?query={main{widgets{name html{responseJson}}}}"
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
@@ -82,20 +82,30 @@ failView : Model -> Html Event
 failView model = div[] [text "Unfortunately, it failed."]
 
 successView : (List Widget) -> Model -> Html Event
-successView widgetList model = div[] [text "Against all odds, it succeeded."]
+successView widgetList model = div[] [ constructWidgetListHTML widgetList ]
 
 
 
 
 fetchWidgetList : Cmd Event
-fetchWidgetList = Http.post { url = graphqlURL, body = graphqlRequestBody, expect = Http.expectJson OnWidgetListDecoded widgetArrayDecoder }
+fetchWidgetList = Http.get { url = graphqlURL, expect = Http.expectJson OnWidgetListDecoded widgetArrayDecoder }
 
 widgetArrayDecoder : Decoder (List Widget)
 widgetArrayDecoder =
-    JSON.list widgetDecoder
+    JSON.at ["data", "main", "widgets"] (list widgetDecoder)
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
     JSON.map2 Widget
-        (JSON.field "main" (JSON.field "widgets" (JSON.field "name" JSON.string)))
-        (JSON.field "main" (JSON.field "widgets" (JSON.field "html" (JSON.field "responseJson" JSON.string))))
+        (field "name" string)
+        (field "html" (field "responseJson" string))
+
+constructWidgetListHTML : (List Widget) -> Html Event
+constructWidgetListHTML widgetList = 
+    widgetList
+    |> List.map (constructWidgetHTML)
+    |> div []
+
+constructWidgetHTML : Widget -> Html Event
+constructWidgetHTML widget = 
+    Html.article [] [ text (widget.name ++ " at " ++ widget.url) ]
