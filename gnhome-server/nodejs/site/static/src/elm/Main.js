@@ -6209,7 +6209,7 @@ var $author$project$Main$constructWidgetHTML = function (widget) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$src(
-						'../widget/' + ($elm$core$String$fromInt(widget.uuid) + '/widget.html')),
+						'../widget/' + $elm$core$String$fromInt(widget.uuid)),
 						$elm$html$Html$Attributes$width(widget.size.width),
 						$elm$html$Html$Attributes$height(widget.size.height)
 					]),
