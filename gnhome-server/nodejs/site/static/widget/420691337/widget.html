@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <div id="clock">Loading...</div>
+
+        <script>
+            const clockDiv = document.getElementById("clock");
+            function updateClock()
+            {
+                clockDiv.innerText = (new Date()).toLocaleTimeString();
+            }
+            setInterval(updateClock, 100);
+        </script>
+    </body>
+</html>

@@ -27,11 +27,11 @@ class API
         
         const widget = widgetList[name];
         return {
+            uuid: widget.uuid,
             name: widget.name,
             description: widget.description,
             version: widget.version,
             status: this.parseResponseToObject(widget.status),
-            html: this.parseResponseToObject(widget.widgetHTML),
         };
     }
 

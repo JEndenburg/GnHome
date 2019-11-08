@@ -4,21 +4,23 @@ const fs = require("fs");
 class Widget
 {
     /**
+     * @param {number} uuid
      * @param {string} name 
      * @param {string} version 
      * @param {string} description
-     * @param {Function} execution
      */
-    constructor(name, version, description)
+    constructor(uuid, name, version, description)
     {
-        if(!name || !description || !version )
+        if(!uuid || !name || !description || !version )
             throw "Constructor parameters may not be undefined";
             
+        this._uuid = uuid;
         this._name = name;
         this._version = version;
         this._description = description;
     }
 
+    get uuid() { return this._uuid; }
     get name() { return this._name; }
     get version() { return this._version; }
     get description() { return this._description; }
@@ -30,11 +32,6 @@ class Widget
     get status() { return new Response(501, "Not Implemented"); }
 
     /**
-     * Getter to respond with widget content's URL.
-     */
-    get widgetHTML() { return new Response(501, "Not Implemented") }
-
-    /**
      * Shorthand for creating a response object.
      * @param {number} statusCode 
      * @param {string} statusMessage 
@@ -43,15 +40,6 @@ class Widget
     createResponse(statusCode, statusMessage, content = {})
     {
         return new Response(statusCode, statusMessage, content);
-    }
-
-    /**
-     * 
-     * @param {String} filePath 
-     */
-    getFileContent(filePath)
-    {
-        return fs.readFileSync(filePath);
     }
 
     run()

@@ -18,7 +18,6 @@ function _dm_init()
 {
     _dm_updateMode();
     _dm_switch.addEventListener("click", _dm_onSwitchToggled);
-    document.body.style.transition = "background-color 0.2s";
 }
 
 _dm_init();

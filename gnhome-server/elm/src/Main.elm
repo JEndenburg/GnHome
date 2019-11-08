@@ -2,8 +2,9 @@ module Main exposing (..)
 
 import Browser
 import Html exposing(Html, div, text)
+import Html.Attributes
 import Http
-import Json.Decode as JSON exposing(Decoder, field, list, string)
+import Json.Decode as JSON exposing(Decoder, field, list, string, int)
 
 type Model
     = Loading
@@ -20,14 +21,15 @@ type Event
 
 type alias Widget =
     {
+        uuid : Int,
         name : String,
-        url : String
+        version: String
     }
 
 
 
 graphqlURL =
-    "http://localhost:8000/api/graphql?query={main{widgets{name html{responseJson}}}}"
+    "http://localhost:8000/api/graphql?query={main{widgets{name uuid version}}}"
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
@@ -96,9 +98,10 @@ widgetArrayDecoder =
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
-    JSON.map2 Widget
+    JSON.map3 Widget
+        (field "uuid" int)
         (field "name" string)
-        (field "html" (field "responseJson" string))
+        (field "version" string)
 
 constructWidgetListHTML : (List Widget) -> Html Event
 constructWidgetListHTML widgetList = 
@@ -108,4 +111,8 @@ constructWidgetListHTML widgetList =
 
 constructWidgetHTML : Widget -> Html Event
 constructWidgetHTML widget = 
-    Html.article [] [ text (widget.name ++ " at " ++ widget.url) ]
+    Html.article [Html.Attributes.class "widget"] 
+    [
+        Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
+        Html.iframe [Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid) ++ "/widget.html")] []
+    ]

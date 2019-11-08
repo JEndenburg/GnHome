@@ -18,11 +18,11 @@ type PDA
 
 type Widget
 {
+    uuid: Int
     name: String
     version: String
     description: String
     status: Response
-    html: Response
 }
 
 type Response
