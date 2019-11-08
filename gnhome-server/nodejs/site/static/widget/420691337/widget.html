@@ -1,14 +1,36 @@
 <html>
+    <head>
+        <link rel="stylesheet" href="./style.css">
+    </head>
     <body>
-        <div id="clock">Loading...</div>
+        <span class="number" id="hour-0"></span>
+        <span class="number" id="hour-1"></span>
+        <span class="number" id="minute-0"></span>
+        <span class="number" id="minute-1"></span>
+        <span id="front"></span>
 
         <script>
-            const clockDiv = document.getElementById("clock");
+        
+            const numbers =
+            [
+                document.getElementById("hour-0"),
+                document.getElementById("hour-1"),
+                document.getElementById("minute-0"),
+                document.getElementById("minute-1"),
+            ];
+
             function updateClock()
             {
-                clockDiv.innerText = (new Date()).toLocaleTimeString();
+                const time = new Date();
+                numbers[0].style.backgroundPositionY = Math.floor(time.getHours() / 10) * -90 + "px";
+                numbers[1].style.backgroundPositionY = (time.getHours() % 10) * -90 + "px";
+                numbers[2].style.backgroundPositionY = Math.floor(time.getMinutes() / 10) * -90 + "px";
+                numbers[3].style.backgroundPositionY = (time.getMinutes() % 10) * -90 + "px";
             }
-            setInterval(updateClock, 100);
+
+            setInterval(updateClock, 800);
+            updateClock();
+
         </script>
     </body>
 </html>
