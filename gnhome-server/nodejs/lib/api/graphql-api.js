@@ -23,6 +23,7 @@ type Widget
     version: String
     description: String
     status: Response
+    size: Size
 }
 
 type Response
@@ -30,6 +31,12 @@ type Response
     statusCode: Int
     statusMessage: String
     responseJson: String
+}
+
+type Size
+{
+    width: Int
+    height: Int
 }
 
 `);

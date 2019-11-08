@@ -23,13 +23,20 @@ type alias Widget =
     {
         uuid : Int,
         name : String,
-        version: String
+        version : String,
+        size : Size
+    }
+
+type alias Size =
+    {
+        width: Int,
+        height: Int
     }
 
 
 
 graphqlURL =
-    "http://localhost:8000/api/graphql?query={main{widgets{name uuid version}}}"
+    "http://localhost:8000/api/graphql?query={main{widgets{name version uuid size{width height}}}}"
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
@@ -98,10 +105,17 @@ widgetArrayDecoder =
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
-    JSON.map3 Widget
+    JSON.map4 Widget
         (field "uuid" int)
         (field "name" string)
         (field "version" string)
+        (field "size" (sizeDecoder))
+
+sizeDecoder : Decoder Size
+sizeDecoder = 
+    JSON.map2 Size
+        (field "width" int)
+        (field "height" int)
 
 constructWidgetListHTML : (List Widget) -> Html Event
 constructWidgetListHTML widgetList = 
@@ -114,5 +128,10 @@ constructWidgetHTML widget =
     Html.article [Html.Attributes.class "widget"] 
     [
         Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
-        Html.iframe [Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid) ++ "/widget.html")] []
+        Html.iframe 
+        [
+            Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid) ++ "/widget.html"),
+            Html.Attributes.width widget.size.width,
+            Html.Attributes.height widget.size.height
+        ] []
     ]

@@ -1,6 +1,7 @@
 const express = require("express");
 const gnhomeInterface = require("gnhome-interface");
 const Response = gnhomeInterface.Response;
+const Size = gnhomeInterface.Widget.Size;
 
 class API
 {
@@ -32,6 +33,7 @@ class API
             description: widget.description,
             version: widget.version,
             status: this.parseResponseToObject(widget.status),
+            size: this.parseSizeToObject(widget.size),
         };
     }
 
@@ -60,6 +62,18 @@ class API
             statusCode: response.status,
             statusMessage: response.message,
             responseJson: JSON.stringify(response.content),
+        };
+    }
+
+    /**
+     * 
+     * @param {Size} size 
+     */
+    parseSizeToObject(size)
+    {
+        return {
+            width: size.width,
+            height: size.height,
         };
     }
 }

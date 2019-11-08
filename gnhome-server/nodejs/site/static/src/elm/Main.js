@@ -6065,26 +6065,36 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$Main$graphqlURL = 'http://localhost:8000/api/graphql?query={main{widgets{name uuid version}}}';
+var $author$project$Main$graphqlURL = 'http://localhost:8000/api/graphql?query={main{widgets{name version uuid size{width height}}}}';
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
 var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$Main$Widget = F3(
-	function (uuid, name, version) {
-		return {name: name, uuid: uuid, version: version};
+var $author$project$Main$Widget = F4(
+	function (uuid, name, version, size) {
+		return {name: name, size: size, uuid: uuid, version: version};
 	});
 var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$Main$Size = F2(
+	function (width, height) {
+		return {height: height, width: width};
+	});
+var $author$project$Main$sizeDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Main$Size,
+	A2($elm$json$Json$Decode$field, 'width', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'height', $elm$json$Json$Decode$int));
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$Main$widgetDecoder = A4(
-	$elm$json$Json$Decode$map3,
+var $author$project$Main$widgetDecoder = A5(
+	$elm$json$Json$Decode$map4,
 	$author$project$Main$Widget,
 	A2($elm$json$Json$Decode$field, 'uuid', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'version', $elm$json$Json$Decode$string));
+	A2($elm$json$Json$Decode$field, 'version', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'size', $author$project$Main$sizeDecoder));
 var $author$project$Main$widgetArrayDecoder = A2(
 	$elm$json$Json$Decode$at,
 	_List_fromArray(
@@ -6156,12 +6166,24 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$html$Html$Attributes$height = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'height',
+		$elm$core$String$fromInt(n));
+};
 var $elm$html$Html$iframe = _VirtualDom_node('iframe');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $elm$html$Html$Attributes$width = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'width',
+		$elm$core$String$fromInt(n));
 };
 var $author$project$Main$constructWidgetHTML = function (widget) {
 	return A2(
@@ -6187,7 +6209,9 @@ var $author$project$Main$constructWidgetHTML = function (widget) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$src(
-						'../widget/' + ($elm$core$String$fromInt(widget.uuid) + '/widget.html'))
+						'../widget/' + ($elm$core$String$fromInt(widget.uuid) + '/widget.html')),
+						$elm$html$Html$Attributes$width(widget.size.width),
+						$elm$html$Html$Attributes$height(widget.size.height)
 					]),
 				_List_Nil)
 			]));
