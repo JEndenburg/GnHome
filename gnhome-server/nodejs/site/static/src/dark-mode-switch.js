@@ -1,5 +1,5 @@
 const _dm_switch = document.getElementById("dark-mode-switch").querySelector("input");
-_dm_switch.checked = (localStorage.getItem("_dm_darkmode") || "false") === "true";
+_dm_switch.checked = (localStorage.getItem("_dm_darkmode") || "true") === "true";
 
 function _dm_onSwitchToggled(event)
 {
