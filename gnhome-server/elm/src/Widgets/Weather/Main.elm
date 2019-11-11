@@ -1,7 +1,8 @@
 port module Widgets.Weather.Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, span)
+import Html.Attributes exposing(id, style, width, height)
 import Http
 import Json.Decode as JSON exposing (Decoder, field, float, string)
 import Json.Encode
@@ -45,12 +46,14 @@ initialModel _ = (FetchingLocation, requestGeolocation ())
 
 view : Model -> Html Event
 view model = 
-    case model of
-        FetchingLocation -> fetchingLocationModel
-        FetchingWeather location -> fetchingWeatherModel location
-        Complete weatherReport -> completeModel weatherReport
-        FailedLocation -> noLocationModel
-        FailedWeather -> noWeatherModel
+    div [id "app"] [
+        case model of
+            FetchingLocation -> fetchingLocationModel
+            FetchingWeather location -> fetchingWeatherModel location
+            Complete weatherReport -> completeModel weatherReport
+            FailedLocation -> noLocationModel
+            FailedWeather -> noWeatherModel
+    ]
 
 update : Event -> Model -> (Model, Cmd Event)
 update event model = 
@@ -72,23 +75,29 @@ subscriptions model =
 
 fetchingLocationModel : Html Event
 fetchingLocationModel = 
-    div [] [ text "Fetching Location..." ]
+    div [id "loading"] [ text "Fetching Location..." ]
 
 fetchingWeatherModel : Location -> Html Event
 fetchingWeatherModel location = 
-    div[] [ text "Fetching Weather..." ]
+    div[id "loading"] [ text "Fetching Weather..." ]
 
 completeModel : WeatherReport -> Html Event
 completeModel weatherReport = 
-    div[] [ text "Got Weather!" ]
+    div[ 
+        id "weather-report",
+        style "background-image" ("url(\"./img/icons/" ++ weatherReport.weather ++ ".png\")")
+    ] [
+        div [id "location"] [ text weatherReport.locationName ],
+        div [id "temperature"] [ text weatherReport.temperature, span [] [ text "°C" ] ]
+    ]
 
 noLocationModel : Html Event
 noLocationModel = 
-    div[] [ text "Failed to get Location!" ]
+    div[id "error"] [ text "Failed to get Location!" ]
 
 noWeatherModel : Html Event
 noWeatherModel = 
-    div[] [ text "Failed to get Weather!" ]
+    div[id "error"] [ text "Failed to get Weather!" ]
 
 
 
