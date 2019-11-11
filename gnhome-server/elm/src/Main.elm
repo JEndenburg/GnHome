@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing(Html, div, text)
-import Html.Attributes
+import Html.Attributes exposing(id)
 import Http
 import Json.Decode as JSON exposing(Decoder, field, list, string, int)
 
@@ -85,10 +85,10 @@ getView model =
         Succeed widgetList -> successView widgetList model
 
 loadView : Model -> Html Event
-loadView model = div[] [text "Loading..."]
+loadView model = div [id "loading"] []
 
 failView : Model -> Html Event
-failView model = div[] [text "Unfortunately, it failed."]
+failView model = div [] [text "Unfortunately, it failed."]
 
 successView : (List Widget) -> Model -> Html Event
 successView widgetList model = div[] [ constructWidgetListHTML widgetList ]
