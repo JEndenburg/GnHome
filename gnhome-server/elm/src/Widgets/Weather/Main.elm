@@ -20,24 +20,9 @@ type alias Location =
 
 type alias WeatherReport = 
     {   locationName : String
-    ,   weather: Weather
+    ,   weather: String
     ,   temperature : String
     }
-
-type Weather
-    = Sunny
-    | ClearNight
-    | HalfCloudy
-    | Cloudy
-    | HeavyCloudy
-    | CloudyNight
-    | Drizzle
-    | Rain
-    | Snow
-    | Hail
-    | Thunder
-    | Misty
-    | MistyNight
 
 type Event
     = ReceivedGeolocation Json.Encode.Value
@@ -129,40 +114,5 @@ weatherReportInternalDecoder : Decoder WeatherReport
 weatherReportInternalDecoder = 
     JSON.map3 WeatherReport
         (field "plaats" string)
-        (field "image" weatherTypeDecoder)
+        (field "image" string)
         (field "temp" string)
-
-weatherTypeDecoder : Decoder Weather
-weatherTypeDecoder = 
-    string
-        |> JSON.andThen (\str ->
-            case str of
-                "zonnig" ->
-                    JSON.succeed Sunny
-                "bliksem" ->
-                    JSON.succeed Thunder
-                "regen" ->
-                    JSON.succeed Rain
-                "buien" ->
-                    JSON.succeed Drizzle
-                "hagel" ->
-                    JSON.succeed Hail
-                "mist" ->
-                    JSON.succeed Misty
-                "sneeuw" ->
-                    JSON.succeed Snow
-                "bewolkt" ->
-                    JSON.succeed Cloudy
-                "halfbewolkt" ->
-                    JSON.succeed HalfCloudy
-                "zwaarbewolkt" ->
-                    JSON.succeed HeavyCloudy
-                "nachtmist" ->
-                    JSON.succeed MistyNight
-                "helderenacht" ->
-                    JSON.succeed ClearNight
-                "wolkennacht" ->
-                    JSON.succeed CloudyNight
-                _ ->
-                    JSON.fail <| "Unrecognized weather type."
-        )
