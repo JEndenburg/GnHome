@@ -1,0 +1,51 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div id="weather">
+            <img id="weather-img" src="" width="250">
+            <span id="degrees">420</span><span>&deg;C</span>
+        </div>
+        <script>
+            const weather = document.getElementById("weather");
+            const weatherImage = document.getElementById("weather-img");
+            const degrees = document.getElementById("degrees");
+
+            function fetchWeather()
+            {
+                navigator.geolocation.getCurrentPosition(fetchWeatherFromLocation);
+            }
+
+            function fetchWeatherFromLocation(location)
+            {
+                const latitude = location.coords.latitude;
+                const longitude = location.coords.longitude;
+                fetch(`http://weerlive.nl/api/json-data-10min.php?key=4096407fcf&locatie=${latitude},${longitude}`)
+                    .then(resp => resp.json())
+                    .then(json => updateWeather(json));
+            }
+
+            function updateWeather(json)
+            {
+                const weatherData = json.liveweer[0]; //https://weerlive.nl/delen.php
+
+                weatherImage.src = `./img/icons/${weatherData.image}.png`;
+                degrees.innerText = weatherData.temp;
+
+                //weather.innerText = `The weather for ${weatherData.plaats} is ${weatherData.image} at ${weatherData.temp} degrees celsius.`;
+            }
+
+            if(navigator.geolocation)
+            {
+                setInterval(fetchWeather, 1800000);
+                fetchWeather();
+            }
+            else
+            {
+                weather.innerText = "Your browser does not support geolocation.";
+            }
+
+        </script>
+    </body>
+</html>
