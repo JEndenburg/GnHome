@@ -1,6 +1,7 @@
 #!bin/bash
 files=(
     "Main"
+    "Widgets\\Weather\\Main"
     )
 
 for f in ${files[*]} 

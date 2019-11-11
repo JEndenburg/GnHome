@@ -1,50 +1,65 @@
 <html>
     <head>
-
+        <script src="./Main.js"></script>
     </head>
     <body>
-        <div id="weather">
-            <img id="weather-img" src="" width="250">
-            <span id="degrees">420</span><span>&deg;C</span>
-        </div>
+        <div id="elm-app"></div>
         <script>
-            const weather = document.getElementById("weather");
-            const weatherImage = document.getElementById("weather-img");
-            const degrees = document.getElementById("degrees");
+            const app = Elm.Widgets.Weather.Main.init({
+                node: document.getElementById("elm-app")
+            });
 
-            function fetchWeather()
+            app.ports.requestGeolocation.subscribe(() => {
+                navigator.geolocation.getCurrentPosition(sendGeolocation);
+            });
+
+            function sendGeolocation(location)
             {
-                navigator.geolocation.getCurrentPosition(fetchWeatherFromLocation);
+                app.ports.receiveGeolocation.send(
+                    {
+                        longitude: location.coords.longitude,
+                        latitude: location.coords.latitude,
+                    }
+                );
             }
 
-            function fetchWeatherFromLocation(location)
-            {
-                const latitude = location.coords.latitude;
-                const longitude = location.coords.longitude;
-                fetch(`http://weerlive.nl/api/json-data-10min.php?key=4096407fcf&locatie=${latitude},${longitude}`)
-                    .then(resp => resp.json())
-                    .then(json => updateWeather(json));
-            }
+            // const weather = document.getElementById("weather");
+            // const weatherImage = document.getElementById("weather-img");
+            // const degrees = document.getElementById("degrees");
 
-            function updateWeather(json)
-            {
-                const weatherData = json.liveweer[0]; //https://weerlive.nl/delen.php
+            // function fetchWeather()
+            // {
+            //     navigator.geolocation.getCurrentPosition(fetchWeatherFromLocation);
+            // }
 
-                weatherImage.src = `./img/icons/${weatherData.image}.png`;
-                degrees.innerText = weatherData.temp;
+            // function fetchWeatherFromLocation(location)
+            // {
+            //     const latitude = location.coords.latitude;
+            //     const longitude = location.coords.longitude;
+            //     fetch(`http://weerlive.nl/api/json-data-10min.php?key=4096407fcf&locatie=${latitude},${longitude}`)
+            //         .then(resp => resp.json())
+            //         .then(json => updateWeather(json));
+            // }
 
-                //weather.innerText = `The weather for ${weatherData.plaats} is ${weatherData.image} at ${weatherData.temp} degrees celsius.`;
-            }
+            // function updateWeather(json)
+            // {
+            //     const weatherData = json.liveweer[0]; //https://weerlive.nl/delen.php
 
-            if(navigator.geolocation)
-            {
-                setInterval(fetchWeather, 1800000);
-                fetchWeather();
-            }
-            else
-            {
-                weather.innerText = "Your browser does not support geolocation.";
-            }
+            //     weatherImage.src = `./img/icons/${weatherData.image}.png`;
+            //     degrees.innerText = weatherData.temp;
+
+            //     //weather.innerText = `The weather for ${weatherData.plaats} is ${weatherData.image} at ${weatherData.temp} degrees celsius.`;
+            // }
+
+            // if(navigator.geolocation)
+            // {
+            //     setInterval(fetchWeather, 1800000);
+            //     fetchWeather();
+            // }
+            // else
+            // {
+            //     weather.innerText = "Your browser does not support geolocation.";
+            // }
 
         </script>
     </body>
