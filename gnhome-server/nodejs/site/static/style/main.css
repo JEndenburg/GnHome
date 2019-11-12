@@ -15,6 +15,7 @@ body
     color: var(--main-text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: background-color 0.2s;
+    overflow: hidden;
 }
 
 header
@@ -157,14 +158,6 @@ footer
     right: 4px;
 }
 
-main
-{
-    width: 70vw;
-    height: 70vh;
-    margin: auto;
-    padding-top: 15vh;
-}
-
 .widget
 {
     position: absolute;
@@ -203,6 +196,12 @@ main
     top: 0;
     left: 0;
     cursor: move;
+}
+
+main
+{
+    width: 100vw;
+    height: 100vh;
 }
 
 main div

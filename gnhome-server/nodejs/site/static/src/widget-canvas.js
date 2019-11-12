@@ -67,8 +67,8 @@ class WidgetWindow
         this._elementDragBar = widgetElement.querySelector(".widget-bar");
         this._elementFrameBlocker = widgetElement.querySelector(".blocker");
         this._canvas = canvas;
-        this._x = 0;
-        this._y = 0;
+        this._x = widgetElement.style.left;
+        this._y = widgetElement.style.top;
         this._mouseRelativeX = 0;
         this._mouseRelativeY = 0;
 
