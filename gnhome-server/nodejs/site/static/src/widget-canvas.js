@@ -14,6 +14,7 @@ class WidgetCanvas
             });
 
         this._widgetList = [];
+        this._focusWidget = null;
     }
 
     /**
@@ -38,6 +39,7 @@ class WidgetCanvas
         for(let widget of widgetElements)
         {
             this._widgetList[index] = new WidgetWindow(widget, this);
+            this.setFocus(this._widgetList[index]);
             index++;
         }
     }
@@ -50,6 +52,26 @@ class WidgetCanvas
         for(let widget of this.widgetList)
         {
             widget.blocked = value;
+        }
+    }
+
+    setFocus(widget)
+    {
+        if(this._focusWidget != widget)
+        {
+            let oldZIndex = widget.zIndex;
+            for(let w of this.widgetList)
+            {
+                if(w != widget)
+                {
+                    if(w.zIndex > oldZIndex)
+                        w.zIndex = w.zIndex - 1;
+                    w.elementDragBar.classList.remove("focus");
+                }
+            }
+            widget.zIndex = this._widgetList.length - 1;
+            widget.elementDragBar.classList.add("focus");
+            this._focusWidget = widget;
         }
     }
 }
@@ -83,14 +105,33 @@ class WidgetWindow
         return this._elementDragBar;
     }
 
+    /**
+     * @returns {HTMLElement}
+     */
+    get element()
+    {
+        return this._element;
+    }
+
     attach()
     {
         this.elementDragBar.onmousedown = (e) => this.onDragBarMouseDown(e);
+        this.element.onmousedown = (e) => this.onMouseDown(e);
     }
 
     detach()
     {
         this.elementDragBar.onmousedown = null;
+        this.element.onmousedown = null;
+    }
+
+    /**
+     * 
+     * @param {MouseEvent} event 
+     */
+    onMouseDown(event)
+    {
+        this._canvas.setFocus(this);
     }
 
     /**
@@ -142,5 +183,21 @@ class WidgetWindow
     set blocked(value)
     {
         this._elementFrameBlocker.style.display = value ? "block" : "none";
+    }
+
+    /**
+     * @param {Number} value
+     */
+    set zIndex(value)
+    {
+        this._element.style.zIndex = value.toString();
+    }
+
+    /**
+     * @returns {Number}
+     */
+    get zIndex()
+    {
+        return Number(this._element.style.zIndex);
     }
 }

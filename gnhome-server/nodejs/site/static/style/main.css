@@ -30,7 +30,7 @@ header
     padding-left: 2vw;
     border-style: none none solid none;
     border-color: var(--primary-border-color);
-    z-index: 10;
+    z-index: 1000000;
     box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
 }
 
@@ -44,7 +44,7 @@ nav
     border-style: none solid none none;
     border-color: var(--nav-border-color);
     color: var(--header-nav-text-color);
-    z-index: 5;
+    z-index: 500000;
     box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
     overflow-y: auto;
 
@@ -140,7 +140,7 @@ footer
 {
     position: fixed;
     bottom: 0;
-    z-index: 7;
+    z-index: 700000;
     width: 100%;
     color: var(--header-nav-text-color);
     border-style: solid none none none;
@@ -168,7 +168,7 @@ footer
 
 .widget .widget-bar
 {
-    background-color: var(--primary-color);
+    background-color: var(--primary-unfocus-color);
     color: var(--header-nav-text-color);
     font-weight: bold;
     padding-left: 0.5rem;
@@ -176,6 +176,11 @@ footer
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     cursor: move;
+}
+
+.widget .widget-bar.focus
+{
+    background-color: var(--primary-color);
 }
 
 .widget iframe
@@ -218,7 +223,7 @@ main div
     height: 100%;
     background-color: var(--background-color);
     background-image: url("../img/grid.png");
-    z-index: 1000;
+    z-index: 100000000;
     opacity: 0.9;
 }
 

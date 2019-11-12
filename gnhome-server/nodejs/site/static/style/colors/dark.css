@@ -2,6 +2,7 @@
 {
     --primary-color: rgb(255, 136, 24);
     --primary-border-color: rgb(185, 102, 24);
+    --primary-unfocus-color: rgb(250, 162, 79);
 
     --nav-color: rgb(73, 68, 62);
     --nav-border-color: rgb(54, 52, 49);
