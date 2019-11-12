@@ -183,6 +183,13 @@ class WidgetCanvas extends CanvasObject
         }
         this._x += x;
         this._y += y;
+        this.updateStylePosition();
+    }
+    
+    updateStylePosition()
+    {
+        document.body.style.backgroundPositionX = this._x + "px";
+        document.body.style.backgroundPositionY = this._y + "px";
     }
 }
 
