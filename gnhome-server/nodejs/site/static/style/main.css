@@ -183,6 +183,11 @@ footer
     background-color: var(--primary-color);
 }
 
+.widget .widget-bar::selection
+{
+    background-color: none;
+}
+
 .widget iframe
 {
     border-style: groove;
