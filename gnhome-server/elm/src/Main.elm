@@ -36,7 +36,7 @@ type alias Size =
 
 
 graphqlURL =
-    "http://localhost:8000/api/graphql?query={main{widgets{name version uuid size{width height}}}}"
+    "/api/graphql?query={main{widgets{name version uuid size{width height}}}}"
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
