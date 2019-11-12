@@ -1,4 +1,54 @@
-class WidgetCanvas
+class CanvasObject
+{
+    /**
+     * 
+     * @param {HTMLElement} element 
+     */
+    constructor(element)
+    {
+        this._element = element;
+        this._x = Number(element.style.left.substr(0, element.style.left.length - 2));
+        this._y = Number(element.style.top.substr(0, element.style.top.length - 2));
+    }
+
+    /**
+     * 
+     * @param {Number} x
+     * @param {Number} y 
+     */
+    moveBy(x, y)
+    {
+        this._x += x;
+        this._y += y;
+        this.updateStylePosition();
+    }
+    
+    updateStylePosition()
+    {
+        this._element.style.left = this._x + "px";
+        this._element.style.top = this._y + "px";
+    }
+
+    /**
+     * @returns {HTMLElement}
+     */
+    get element()
+    {
+        return this._element;
+    }
+
+    get x()
+    {
+        return this._x;
+    }
+
+    get y()
+    {
+        return this._y;
+    }
+}
+
+class WidgetCanvas extends CanvasObject
 {
     /**
      * 
@@ -6,6 +56,7 @@ class WidgetCanvas
      */
     constructor(observerTarget)
     {
+        super(observerTarget);
         this._observer = new MutationObserver((m,o) => this.updateWidgetList());
         this._observer.observe(observerTarget,
             {
@@ -15,6 +66,10 @@ class WidgetCanvas
 
         this._widgetList = [];
         this._focusWidget = null;
+        this._elementBeingDragged = false;
+        this._mouseRelativeX = 0;
+        this._mouseRelativeY = 0;
+        observerTarget.onmousedown = (e) => this.onMouseDown(e);
     }
 
     /**
@@ -53,6 +108,7 @@ class WidgetCanvas
         {
             widget.blocked = value;
         }
+        this._elementBeingDragged = value;
     }
 
     setFocus(widget)
@@ -74,9 +130,63 @@ class WidgetCanvas
             this._focusWidget = widget;
         }
     }
+
+    /**
+     * 
+     * @param {MouseEvent} event 
+     */
+    onMouseDown(event)
+    {
+        if(!this._elementBeingDragged)
+        {
+            this.blockedWidgets = true;
+            this._mouseRelativeX = event.clientX;
+            this._mouseRelativeY = event.clientY;
+            this._element.classList.add("grabbed");
+            document.onmousemove = (e) => this.onMouseMove(e);
+            document.onmouseup = (e) => this.onMouseUp(e);
+        }
+    }
+
+    /**
+     * 
+     * @param {MouseEvent} event 
+     */
+    onMouseMove(event)
+    {
+        this.moveBy(event.clientX - this._mouseRelativeX, event.clientY - this._mouseRelativeY);
+        this._mouseRelativeX = event.clientX;
+        this._mouseRelativeY = event.clientY;
+    }
+
+    /**
+     * 
+     * @param {MouseEvent} event 
+     */
+    onMouseUp(event)
+    {
+        document.onmouseup = document.onmousemove = null;
+        this.blockedWidgets = false;
+        this._element.classList.remove("grabbed");
+    }
+
+    /**
+     * 
+     * @param {Number} x
+     * @param {Number} y 
+     */
+    moveBy(x, y)
+    {
+        for(let widget of this.widgetList)
+        {
+            widget.moveBy(x, y);
+        }
+        this._x += x;
+        this._y += y;
+    }
 }
 
-class WidgetWindow
+class WidgetWindow extends CanvasObject
 {
     /**
      * 
@@ -85,12 +195,10 @@ class WidgetWindow
      */
     constructor(widgetElement, canvas)
     {
-        this._element = widgetElement;
+        super(widgetElement);
         this._elementDragBar = widgetElement.querySelector(".widget-bar");
         this._elementFrameBlocker = widgetElement.querySelector(".blocker");
         this._canvas = canvas;
-        this._x = widgetElement.style.left;
-        this._y = widgetElement.style.top;
         this._mouseRelativeX = 0;
         this._mouseRelativeY = 0;
 
@@ -154,17 +262,11 @@ class WidgetWindow
      */
     onDragBarMouseMove(event)
     {
-        this._x = this._mouseRelativeX - event.clientX;
-        this._y = this._mouseRelativeY - event.clientY;
+        // this._x = this._mouseRelativeX - event.clientX;
+        // this._y = this._mouseRelativeY - event.clientY;
+        super.moveBy(event.clientX - this._mouseRelativeX, event.clientY - this._mouseRelativeY);
         this._mouseRelativeX = event.clientX;
         this._mouseRelativeY = event.clientY;
-        this.updateStylePosition();
-    }
-    
-    updateStylePosition()
-    {
-        this._element.style.left = (this._element.offsetLeft - this._x) + "px";
-        this._element.style.top = (this._element.offsetTop - this._y) + "px";
     }
 
     /**

@@ -205,8 +205,15 @@ footer
 
 main
 {
+    position: absolute;
     width: 100vw;
     height: 100vh;
+    cursor: grab;
+}
+
+main.grabbed
+{
+    cursor: grabbing;
 }
 
 main div
