@@ -16,31 +16,22 @@ app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
 
-app.use((req, res, next) => {
-    let path = "pages/" + req.path;
-
-    try
-    {
-        res.render(path, (error, html) => {
-            if(error == null)
-                res.send(html);
-            else
-            {
-                path += "/index";
-                res.render(path, (error2, html2) => {
-                    if(error2 == null)
-                        res.send(html2);
-                    else
-                        next(error2);
-                })
-            }
-        });
-    }
-    catch(exception)
-    {
-        next();
-    }
+app.get("/", (req, res) => {
+    res.redirect("/m");
 });
+
+app.get("/m", renderIndexPage);
+app.get("/m/*", renderIndexPage);
+
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ */
+function renderIndexPage(req, res)
+{
+    res.render("pages/index.ejs");
+}
 
 //Fallback in case of 404
 app.use((req, res, next) => {
