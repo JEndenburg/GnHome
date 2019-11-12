@@ -37,8 +37,19 @@ class WidgetCanvas
         let index = 0;
         for(let widget of widgetElements)
         {
-            this._widgetList[index] = new WidgetWindow(widget);
+            this._widgetList[index] = new WidgetWindow(widget, this);
             index++;
+        }
+    }
+
+    /**
+     * @param {boolean} value
+     */
+    set blockedWidgets(value)
+    {
+        for(let widget of this.widgetList)
+        {
+            widget.blocked = value;
         }
     }
 }
@@ -48,14 +59,16 @@ class WidgetWindow
     /**
      * 
      * @param {HTMLElement} widgetElement 
+     * @param {WidgetCanvas} canvas
      */
-    constructor(widgetElement)
+    constructor(widgetElement, canvas)
     {
         this._element = widgetElement;
         this._elementDragBar = widgetElement.querySelector(".widget-bar");
+        this._elementFrameBlocker = widgetElement.querySelector(".blocker");
+        this._canvas = canvas;
         this._x = 0;
         this._y = 0;
-
         this._mouseRelativeX = 0;
         this._mouseRelativeY = 0;
 
@@ -77,6 +90,7 @@ class WidgetWindow
 
     detach()
     {
+        this.elementDragBar.onmousedown = null;
     }
 
     /**
@@ -85,10 +99,12 @@ class WidgetWindow
      */
     onDragBarMouseDown(event)
     {
+        event.preventDefault();
         this._mouseRelativeX = event.clientX;
         this._mouseRelativeY = event.clientY;
         document.onmousemove = (e) => this.onDragBarMouseMove(e);
         document.onmouseup = (e) => this.onDragBarMouseUp(e);
+        this._canvas.blockedWidgets = true;
     }
 
     /**
@@ -117,5 +133,14 @@ class WidgetWindow
     onDragBarMouseUp(event)
     {
         document.onmouseup = document.onmousemove = null;
+        this._canvas.blockedWidgets = false;
+    }
+
+    /**
+     * @param {boolean} value
+     */
+    set blocked(value)
+    {
+        this._elementFrameBlocker.style.display = value ? "block" : "none";
     }
 }

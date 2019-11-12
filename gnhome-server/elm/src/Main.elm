@@ -133,5 +133,6 @@ constructWidgetHTML widget =
             Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
             Html.Attributes.width widget.size.width,
             Html.Attributes.height widget.size.height
-        ] []
+        ] [],
+        Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
     ]

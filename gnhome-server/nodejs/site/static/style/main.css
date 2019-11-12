@@ -194,6 +194,17 @@ main
     transition: background-color 0.2s;
 }
 
+.blocker
+{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: move;
+}
+
 main div
 {
     display: flex;
