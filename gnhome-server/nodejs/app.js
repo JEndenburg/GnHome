@@ -16,12 +16,7 @@ app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
 
-app.get("/", (req, res) => {
-    res.redirect("/m");
-});
-
-app.get("/m", renderIndexPage);
-app.get("/m/*", renderIndexPage);
+app.get("/*", renderIndexPage);
 
 /**
  * 
