@@ -139,6 +139,7 @@ class WidgetCanvas extends CanvasObject
     {
         if(!this._elementBeingDragged)
         {
+            event.preventDefault();
             this.blockedWidgets = true;
             this._mouseRelativeX = event.clientX;
             this._mouseRelativeY = event.clientY;
@@ -269,8 +270,6 @@ class WidgetWindow extends CanvasObject
      */
     onDragBarMouseMove(event)
     {
-        // this._x = this._mouseRelativeX - event.clientX;
-        // this._y = this._mouseRelativeY - event.clientY;
         super.moveBy(event.clientX - this._mouseRelativeX, event.clientY - this._mouseRelativeY);
         this._mouseRelativeX = event.clientX;
         this._mouseRelativeY = event.clientY;
