@@ -7,7 +7,8 @@ import Html.Attributes as Attributes exposing (id, class)
 import Url
 import Route exposing(Route)
 
-import Page.Home
+import Page
+import Page.Dashboard
 
 type alias Model = 
     {   route : Route
@@ -17,7 +18,7 @@ type alias Model =
 
 type Page
     = NotFound
-    | Dashboard Page.Home.Model
+    | Dashboard Page.Dashboard.Model
 
 type Event
     = UrlChanged Url.Url
@@ -61,8 +62,8 @@ changePage (model, ev) =
         (page, mappedCommands) = 
             case model.route of
                 Route.NotFound -> ( NotFound, Cmd.none )
-                Route.Dashboard -> let (subModel, subCmds) = Page.Home.init in ( Dashboard subModel, subCmds )
-                Route.Widgets -> let (subModel, subCmds) = Page.Home.init in ( NotFound, subCmds )
+                Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, subCmds )
+                Route.Widgets -> let (subModel, subCmds) = Page.Dashboard.init in ( NotFound, subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
@@ -77,35 +78,9 @@ view : Model -> Browser.Document Event
 view model = 
     {   title = "GnHome"
     ,   body = 
-        [   viewNavigationBar,
-            case model.page of
+        [   Page.view
+        ,   case model.page of
                 NotFound -> div [] []
-                Dashboard subModel -> div [] [text "Hello World!"]
+                Dashboard subModel -> div [] []
         ]
     }
-
-viewNavigationBar : Html Event
-viewNavigationBar = 
-    nav []
-    [   div [id "nav-header"] [text "Menu"]
-    ,   span [id "nav-collapse"] [ i [class "fa fa-angle-right"] [] ]
-    ,   ul []
-        [   viewNavigationElement [] "Dashboard" "dashboard"
-        ,   viewNavigationElementDisabled [] "Settings" "gear"
-        ,   hr [] []
-        ]
-    ]
-
-viewNavigationElement : List (Html.Attribute Event) -> String -> String -> Html Event
-viewNavigationElement attributes name icon = 
-    Html.a [ Attributes.href "javascript:;" ]
-    [
-        li attributes
-        [   span [class "text"] [text name]
-        ,   i [class ("fa fa-" ++ icon)] []
-        ]
-    ]
-
-viewNavigationElementDisabled : List (Html.Attribute Event) -> String -> String -> Html Event
-viewNavigationElementDisabled attributes name icon = 
-    viewNavigationElement ((class "Disabled")::attributes) name icon
