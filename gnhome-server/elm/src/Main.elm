@@ -78,8 +78,9 @@ view : Model -> Browser.Document Event
 view model = 
     {   title = "GnHome"
     ,   body = 
-        [   Page.view
-        ,   case model.page of
+        List.append
+        Page.view
+        [   case model.page of
                 NotFound -> div [] []
                 Dashboard subModel -> div [] []
         ]
