@@ -12,7 +12,7 @@ function _nav_updateNavBar()
     const collapseButton = document.getElementById("nav-collapse");
     if(_nav_collapsed)
     {
-        document.documentElement.style.setProperty("--nav-offset", "calc(-20vw + 48px)");
+        document.documentElement.style.setProperty("--nav-offset", "calc(-20vw + 5.25vh)");
         collapseButton.style.setProperty("transform", "rotateY(0deg)");
     }
     else
