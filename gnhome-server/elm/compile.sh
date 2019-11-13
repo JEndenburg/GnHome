@@ -21,4 +21,8 @@ do
 done
 
 printf "Project compiled.\n"
-read -p "Press [Enter] to exit."
+
+if [ "$1" != "-n" ]
+then
+    read -p "Press [Enter] to exit."
+fi
