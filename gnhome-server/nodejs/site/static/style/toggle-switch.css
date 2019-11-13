@@ -4,8 +4,8 @@
 {
     position: relative;
     display: inline-block;
-    width: 32px;
-    height: 16px;
+    width: 3.6vh;
+    height: 1.8vh;
 }
 
 .switch input
@@ -32,10 +32,10 @@
 {
     position: absolute;
     content: "";
-    height: 8px;
-    width: 12px;
-    left: 4px;
-    bottom: 4px;
+    height: 1vh;
+    width: 1.5vh;
+    left: 0.3vh;
+    bottom: 0.45vh;
     background-color: white;
     transition: .4s;
     border-radius: 50px;
@@ -48,5 +48,5 @@
 
 .switch input:checked + .slider:before 
 {
-    transform: translateX(12px);
+    transform: translateX(1.6vh);
 }

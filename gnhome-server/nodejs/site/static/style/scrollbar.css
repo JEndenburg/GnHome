@@ -1,13 +1,13 @@
 nav
 {
     scrollbar-color: var(--nav-border-color) var(--nav-item-color);
-    scrollbar-width: 5px;
+    scrollbar-width: 1.5vh;
     scrollbar-highlight-color: var(--nav-item-hover-color);
 }
 
 nav::-webkit-scrollbar
 {
-    width: 5px;
+    width: 1.5vh;
 }
 
 nav::-webkit-scrollbar-track

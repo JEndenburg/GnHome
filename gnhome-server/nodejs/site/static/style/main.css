@@ -1,7 +1,7 @@
 :root
 {
     --header-height: 4vh;
-    --footer-height: 24px;
+    --footer-height: 2.5vh;
 
     --nav-width: 20vw;
     --nav-offset: 0px;
@@ -30,8 +30,9 @@ header
     padding-left: 2vw;
     border-style: none none solid none;
     border-color: var(--primary-border-color);
+    border-width: 0.25vh;
     z-index: 1000000;
-    box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
+    box-shadow: 0px 1vh 1vh rgba(0,0,0,0.2);
 }
 
 nav
@@ -43,9 +44,10 @@ nav
     height: calc(100% - var(--header-height) - var(--footer-height));
     border-style: none solid none none;
     border-color: var(--nav-border-color);
+    border-width: 0.25vh;
     color: var(--header-nav-text-color);
     z-index: 500000;
-    box-shadow: 4px 0px 4px rgba(0,0,0,0.2);
+    box-shadow: 1vh 0px 1vh rgba(0,0,0,0.2);
     overflow-y: auto;
 
     left: var(--nav-offset);
@@ -55,6 +57,8 @@ nav
 nav hr
 {
     color: var(--nav-border-color);
+    margin: 0;
+    border-width: 0.3vh;
 }
 
 nav ul
@@ -74,12 +78,12 @@ nav ul a
 
 nav ul li
 {
-    padding: 4px;
-    padding-left: 1rem;
-    padding-bottom: 2px;
-    margin-bottom: 4px;
-    height: 34px;
-    font-size: 1.1rem;
+    padding: 1vh;
+    padding-left: 1.5vh;
+    padding-bottom: 0.5vh;
+    margin-bottom: 0.4vh;
+    height: 4vh;
+    font-size: 2vh;
     background-color: var(--nav-item-color);
     cursor: pointer;
 }
@@ -87,12 +91,12 @@ nav ul li
 nav ul li i.fa
 {
     position: absolute;
-    right: 2px;
-    font-size: 1.4rem;
+    right: 1vh;
+    font-size: 2.5vh;
     background-color: var(--nav-color);
-    width: 32px;
-    height: 27px;
-    padding-top: 5px;
+    width: 3.5vh;
+    height: 3.0vh;
+    padding-top: 0.5vh;
     text-align: center;
     vertical-align: middle;
     border-radius: 100%;
@@ -113,16 +117,16 @@ nav ul li.disabled
 nav #nav-collapse
 {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 1.2vh;
+    right: 1.2vh;
     background-color: var(--nav-item-color);
-    width: 30px;
-    height: 28px;
-    padding-left: 2px;
-    padding-bottom: 4px;
+    width: 3.3vh;
+    height: 3.0vh;
+    padding-left: 0.2vh;
+    padding-bottom: 0.5vh;
     text-align: center;
     vertical-align: middle;
-    font-size: 1.9rem;
+    font-size: 3.3vh;
     border-radius: 100%;
     transform: rotateY(180deg);
     transition: transform 0.5s;
@@ -137,9 +141,10 @@ nav #nav-collapse:hover
 #nav-header
 {
     text-align: center;
-    padding: 0.5rem;
-    font-size: 1.4rem;
+    padding: 1vh;
+    font-size: 2vh;
     font-weight: bold;
+    margin-bottom: 3vh;
 }
 
 footer
@@ -151,17 +156,19 @@ footer
     color: var(--header-nav-text-color);
     border-style: solid none none none;
     border-color: var(--nav-border-color);
+    border-width: 0.25vh;
     height: var(--footer-height);
     background-color: var(--nav-color);
-    box-shadow: 0px -4px 4px rgba(0,0,0,0.2);
+    box-shadow: 0px -1vh 1vh rgba(0,0,0,0.2);
     text-align: center;
+    font-size: 1.7vh;
 }
 
 #dark-mode-switch
 {
     position: fixed;
-    top: 4px;
-    right: 4px;
+    top: 1vh;
+    right: 1vh;
 }
 
 .widget
