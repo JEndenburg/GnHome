@@ -1,4 +1,4 @@
-module Main exposing (..)
+module WidgetCanvas exposing (..)
 
 import Browser
 import Html exposing(Html, div, text)

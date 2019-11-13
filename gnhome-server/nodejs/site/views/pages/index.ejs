@@ -1,7 +1,7 @@
 <HTML>
     <head>
         <%- include ../partials/head.ejs %>
-        <script src="../src/elm/Main.js"></script>
+        <script src="../src/elm/WidgetCanvas.js"></script>
     </head>
     <body>
         <%- include ../partials/header.ejs %>
@@ -9,7 +9,7 @@
         <main><div id="elm-app"></div></main>
         <script src="../src/widget-canvas.js"></script>
         <script>
-            const app = Elm.Main.init({ node: document.getElementById("elm-app") });
+            const app = Elm.WidgetCanvas.init({ node: document.getElementById("elm-app") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"));
         </script>
         <%- include ../partials/footer.ejs %>
