@@ -110,7 +110,7 @@ locationDecoder =
 
 
 getWeatherAPIUrl : Location -> String
-getWeatherAPIUrl location = "/widget/344/mock.json"
+getWeatherAPIUrl location = "/mock/api/weather.json"
 
 fetchWeatherReport : Location -> Cmd Event
 fetchWeatherReport location = Http.get { url = (getWeatherAPIUrl location), expect = Http.expectJson DecodedWeatherReport weatherReportDecoder }

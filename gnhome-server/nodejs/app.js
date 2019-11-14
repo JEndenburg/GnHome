@@ -13,7 +13,25 @@ app.set("views", "site/views/");
 app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
-app.get("/widget/344/mock.json", (req, res) => { res.send("./site/static/widget/344/mock.json") }); //THIS IS A MOCK API
+app.get("/mock/api/weather.json", (req, res) => {
+    const imageList = [
+        "bewolkt", "zonnig", "bliksem", "regen", "halfbewolkt",
+        "hagel", "buien", "zwaarbewolkt", "mist", "sneeuw",
+        "helderenacht", "nachtmist", "wolkennacht"
+    ]
+
+    let report = {
+        liveweer: [
+            {
+                plaats: "De Bilt",
+                temp: (Math.random() * 10.0 - 2.0).toFixed("1"),
+                image: imageList[Math.floor(Math.random() * imageList.length)],
+            }
+        ]
+    }
+
+     res.send(report); 
+}); //THIS IS A MOCK API
 
 app.get("/*", renderIndexPage);
 
