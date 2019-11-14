@@ -1,0 +1,54 @@
+#widget-repo
+{
+    width: 100%;
+    color: var(--darkmode-affected-text-color);
+    transition: 0.2s;
+    border-collapse: collapse;
+    font-size: 2vh;
+    border-radius: 1.5vh;
+    overflow: hidden;
+}
+
+#widget-repo tr td, th
+{
+    padding-left: 0.5vh;
+    padding-right: 0.5vh;
+}
+
+#widget-repo tr td
+{
+    height: 6vh;
+}
+
+#widget-repo tr
+{
+    background-color: var(--repo-table-color-even);
+}
+
+#widget-repo tr:nth-of-type(2n)
+{
+    background-color: var(--repo-table-color-odd);
+}
+
+#widget-repo tr:first-child
+{
+    border-style: none none solid none;
+    background-color: var(--repo-table-color-header);
+    color: var(--repo-table-text-color-header);
+    border-color: var(--repo-table-border-color);
+    border-width: 0.5vh;
+}
+
+#widget-repo tr:not(:first-child)
+{
+    border-style: solid none none none;
+    border-width: 0.1vh;
+    border-color: var(--repo-table-border-color);
+}
+
+#widget-repo tr td:not(:first-child), th:not(:first-child)
+{
+    border-style: none none none solid;
+    border-width: 0.1vh;
+    border-color: var(--repo-table-border-color);
+}

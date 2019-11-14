@@ -18,4 +18,10 @@
     --header-nav-text-color: rgb(247, 249, 255);
     --darkmode-affected-text-color: rgb(247, 249, 255);
     --disabled-text-color: rgb(84, 84, 87);
+
+    --repo-table-border-color: rgb(224, 243, 241);
+    --repo-table-color-header: rgb(255, 136, 24);
+    --repo-table-text-color-header: rgb(247, 249, 255);
+    --repo-table-color-even: rgb(49, 49, 49);
+    --repo-table-color-odd: rgb(36, 36, 36);
 }
