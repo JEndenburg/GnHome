@@ -4,7 +4,7 @@
     --footer-height: 2.5vh;
 
     --nav-width: 20vw;
-    --nav-offset: 0px;
+    --nav-offset: 0vw;
 }
 
 body
@@ -308,6 +308,15 @@ main div
 .notif::selection
 {
     background-color: none;
+}
+
+#modal-popup
+{
+    width: calc(100vw - (var(--nav-width) + var(--nav-offset)));
+    height: calc(100vh - (var(--header-height) + var(--footer-height)));
+    right: 0;
+    top: var(--header-height);
+    transition: 0.2s;
 }
 
 @media (orientation: landscape)

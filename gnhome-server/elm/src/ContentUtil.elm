@@ -1,4 +1,4 @@
-module ContentUtil exposing (MessageType(..), viewMessage)
+module ContentUtil exposing (MessageType(..), viewMessage, viewModal)
 
 import Html exposing (Html, text, div)
 import Html.Attributes exposing (class, id)
@@ -28,4 +28,4 @@ viewMessage type_ text_ =
 
 viewModal : List (Html msg) -> Html msg
 viewModal content =
-    div [id "modal-popup"] content
+    div [id "modal-popup"] [div [id "modal-popup-container"] content]

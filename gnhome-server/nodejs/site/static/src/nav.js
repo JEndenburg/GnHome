@@ -17,7 +17,7 @@ function _nav_updateNavBar()
     }
     else
     {
-        document.documentElement.style.setProperty("--nav-offset", "0");
+        document.documentElement.style.setProperty("--nav-offset", "0vw");
         collapseButton.style.setProperty("transform", "rotateY(180deg)");
     }
 }

@@ -14,4 +14,4 @@ init = (Main, Cmd.none)
 
 view : Model -> (Html Event)
 view model = 
-    div[style "display" "none"] [Html.text "Dashboard"]
+    div[style "display" "none"] []

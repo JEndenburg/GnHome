@@ -1,7 +1,9 @@
 module Page.WidgetRepo exposing (..)
 
-import Html exposing (Html, div)
+import Html exposing (Html, text, div)
 import Html.Attributes exposing (style)
+
+import ContentUtil
 
 type Model
     = Main
@@ -14,4 +16,7 @@ init = (Main, Cmd.none)
 
 view : Model -> (Html Event)
 view model = 
-    div[style "display" "none"] [Html.text "WidgetRepo"]
+    ContentUtil.viewModal
+    [
+        text "Bacon Ipsum Dolorem Spicy Jalapeño"
+    ]
