@@ -1,7 +1,7 @@
-module ContentUtil exposing (MessageType(..), viewMessage, viewModal)
+module ContentUtil exposing (MessageType(..), viewMessage, viewModal, viewToggle)
 
-import Html exposing (Html, text, div)
-import Html.Attributes exposing (class, id)
+import Html exposing (Html, text, div, label, input, span)
+import Html.Attributes exposing (class, id, type_, checked)
 
 type MessageType
     = Info
@@ -29,3 +29,10 @@ viewMessage type_ text_ =
 viewModal : List (Html msg) -> Html msg
 viewModal content =
     div [id "modal-popup"] [div [id "modal-popup-container"] content]
+
+viewToggle : List (Html.Attribute msg) -> Bool -> Html msg
+viewToggle attributes isChecked = 
+    label ( List.append [ class "switch" ] attributes )
+        [   input [ type_ "checkbox", checked isChecked ] []
+        ,   span [ class "slider" ] []
+        ]

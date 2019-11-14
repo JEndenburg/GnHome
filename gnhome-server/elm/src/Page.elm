@@ -3,6 +3,8 @@ module Page exposing (view)
 import Html exposing (Html, text, nav, div, span, ul, li, i, hr, input, header, label, footer)
 import Html.Attributes as Attributes exposing (id, class, type_, checked)
 
+import ContentUtil
+
 view : List (Html msg)
 view = 
     [   viewNavigationBar
@@ -14,10 +16,7 @@ viewHeader : Html msg
 viewHeader = 
     header []
     [   text "GnHome"
-    ,   label [ id "dark-mode-switch", class "switch" ]
-        [   input [ type_ "checkbox", checked False ] []
-        ,   span [ class "slider" ] []
-        ]
+    ,   ContentUtil.viewToggle [id "dark-mode-switch"] False
     ]
 
 viewNavigationBar : Html msg
