@@ -66,7 +66,6 @@ class API
             widgetList[name].active = value;
             success = true;
         }
-        console.log("Bwa");
         return success;
     }
 

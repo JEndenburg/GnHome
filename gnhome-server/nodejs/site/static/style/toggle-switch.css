@@ -23,7 +23,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: black;
+    background-color: var(--toggle-inactive-color);
     border-radius: 50px;
     transition: .4s;
 }
@@ -43,7 +43,7 @@
 
 .switch input:checked + .slider 
 {
-    background-color: lightgray;
+    background-color: var(--toggle-active-color);
 }
 
 .switch input:checked + .slider:before 

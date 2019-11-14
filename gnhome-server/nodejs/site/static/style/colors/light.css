@@ -24,4 +24,7 @@
     --repo-table-text-color-header: rgb(247, 249, 255);
     --repo-table-color-even: rgb(211, 211, 211);
     --repo-table-color-odd: rgb(204, 201, 201);
+
+    --toggle-active-color: rgb(163, 163, 163);
+    --toggle-inactive-color: rgb(99, 99, 99);
 }
