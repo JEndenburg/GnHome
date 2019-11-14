@@ -24,3 +24,15 @@
     border-radius: 2.5vh;
     color: var(--darkmode-affected-text-color);
 }
+
+.modal-header
+{
+    font-size: 3vh;
+    font-weight: bold;
+    padding-left: 1vw;;
+}
+
+.modal-content
+{
+    font-size: 2vh;
+}

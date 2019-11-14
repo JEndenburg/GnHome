@@ -3,6 +3,7 @@ files=(
     "Main"
     "WidgetCanvas"
     "Widgets\\Weather\\Main"
+    "Widgets\\Weather\\Mock"
     )
 
 for f in ${files[*]} 

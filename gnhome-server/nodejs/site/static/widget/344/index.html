@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link href="./style.css" rel="stylesheet">
+        <script src="./Main.js"></script>
+    </head>
+    <body>
+        <div id="elm-app"></div>
+        <span id="copyright"><a href="http://www.copyrightvrijeplaatjes.nl" target="_blank">Background by http://www.copyrightvrijeplaatjes.nl</a></span>
+        <script>
+            const app = Elm.Widgets.Weather.Mock.init({
+                node: document.getElementById("elm-app")
+            });
+
+            // app.ports.requestGeolocation.subscribe(() => {
+            //     navigator.geolocation.getCurrentPosition(sendGeolocation);
+            // });
+
+            // function sendGeolocation(location)
+            // {
+            //     app.ports.receiveGeolocation.send(
+            //         {
+            //             longitude: location.coords.longitude,
+            //             latitude: location.coords.latitude,
+            //         }
+            //     );
+            // }
+        </script>
+    </body>
+</html>

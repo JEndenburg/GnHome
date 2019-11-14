@@ -1,7 +1,7 @@
 module Page.WidgetRepo exposing (..)
 
-import Html exposing (Html, text, div)
-import Html.Attributes exposing (style)
+import Html exposing (Html, text, div, hr)
+import Html.Attributes exposing (style, class, id)
 
 import ContentUtil
 
@@ -17,6 +17,7 @@ init = (Main, Cmd.none)
 view : Model -> (Html Event)
 view model = 
     ContentUtil.viewModal
-    [
-        text "Bacon Ipsum Dolorem Spicy Jalapeño"
+    [   div [ class "modal-header" ] [ text "Manage Widgets" ]
+    ,   hr [] []
+    ,   div [ class "modal-content" ] [ text "Widget Text" ]
     ]

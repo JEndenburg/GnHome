@@ -3,7 +3,6 @@ const widgetLoader = require("./lib/widget-loader");
 const interface = require("gnhome-interface");
 const APIGraphQL = require("./lib/api/graphql-api");
 const port = 8000;
-const cors = require("cors");
 
 widgetLoader.loadWidgets(__dirname + "/widgets");
 
@@ -11,10 +10,10 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", "site/views/");
-app.use(cors());
 app.use(express.static("site/static"));
 
 let graphQL = new APIGraphQL(app);
+app.get("/widget/344/mock.json", (req, res) => { res.send("./site/static/widget/344/mock.json") }); //THIS IS A MOCK API
 
 app.get("/*", renderIndexPage);
 
