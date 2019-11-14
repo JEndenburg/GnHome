@@ -4,7 +4,7 @@ import Browser
 import Html exposing(Html, div, text)
 import Html.Attributes exposing(id)
 import Http
-import Json.Decode as JSON exposing(Decoder, field, list, string, int)
+import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool)
 
 type Model
     = Loading
@@ -24,7 +24,8 @@ type alias Widget =
         uuid : Int,
         name : String,
         version : String,
-        size : Size
+        size : Size,
+        active : Bool
     }
 
 type alias Size =
@@ -36,7 +37,7 @@ type alias Size =
 
 
 graphqlURL =
-    "/api/graphql?query={main{widgets{name version uuid size{width height}}}}"
+    "/api/graphql?query={main{widgets{name version uuid size{width height} active}}}"
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
@@ -105,11 +106,12 @@ widgetArrayDecoder =
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
-    JSON.map4 Widget
+    JSON.map5 Widget
         (field "uuid" int)
         (field "name" string)
         (field "version" string)
         (field "size" (sizeDecoder))
+        (field "active" bool)
 
 sizeDecoder : Decoder Size
 sizeDecoder = 
@@ -125,14 +127,17 @@ constructWidgetListHTML widgetList =
 
 constructWidgetHTML : Widget -> Html Event
 constructWidgetHTML widget = 
-    Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" "128px", Html.Attributes.style "left" "128px"] 
-    [
-        Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
-        Html.iframe 
+    if widget.active then
+        Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" "128px", Html.Attributes.style "left" "128px"] 
         [
-            Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
-            Html.Attributes.width widget.size.width,
-            Html.Attributes.height widget.size.height
-        ] [],
-        Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
-    ]
+            Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
+            Html.iframe 
+            [
+                Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
+                Html.Attributes.width widget.size.width,
+                Html.Attributes.height widget.size.height
+            ] [],
+            Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
+        ]
+    else
+        div[] []

@@ -5,10 +5,15 @@ const { buildSchema } = require("graphql");
 
 const schema = buildSchema(`
 
+type Mutation
+{
+    setWidget(name: String!, active: Boolean!): Boolean
+}
+
 type Query
 {
     main: PDA!
-    widget(name: String!): Widget
+    getWidget(name: String!): Widget
 }
 
 type PDA
@@ -24,6 +29,7 @@ type Widget
     description: String
     status: Response
     size: Size
+    active: Boolean
 }
 
 type Response
@@ -60,7 +66,8 @@ class APIGraphQL extends API
     get root()
     {
         return {
-            widget: (args) => super.getWidgetByName(args.name),
+            setWidget: (args) => super.setWidgetActive(args.name, args.active),
+            getWidget: (args) => super.getWidgetByName(args.name),
             main: (args) => super.getPDA(),
         }
     }

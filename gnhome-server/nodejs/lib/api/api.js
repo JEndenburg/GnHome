@@ -34,6 +34,7 @@ class API
             version: widget.version,
             status: this.parseResponseToObject(widget.status),
             size: this.parseSizeToObject(widget.size),
+            active: widget.active,
         };
     }
 
@@ -50,6 +51,23 @@ class API
         }
 
         return widgets;
+    }
+
+    /**
+     * @param {String} name
+     * @param {Boolean} value 
+     */
+    setWidgetActive(name, value)
+    {
+        let success = false;
+        const widgetList = gnhomeInterface.getWidgetList();
+        if(widgetList[name])
+        {
+            widgetList[name].active = value;
+            success = true;
+        }
+        console.log("Bwa");
+        return success;
     }
 
     /**

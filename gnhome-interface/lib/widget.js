@@ -21,6 +21,7 @@ class Widget
         this._version = version;
         this._description = description;
         this._size = size;
+        this._active = true;
     }
 
     get uuid() { return this._uuid; }
@@ -28,6 +29,8 @@ class Widget
     get version() { return this._version; }
     get description() { return this._description; }
     get size() { return this._size; }
+    get active() { return this._active; }
+    set active(value) { this._active = value; }
 
     /**
      * Getter to respond with current widget's global status.
