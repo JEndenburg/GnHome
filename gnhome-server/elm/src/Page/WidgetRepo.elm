@@ -1,4 +1,4 @@
-module Page.Dashboard exposing (..)
+module Page.WidgetRepo exposing (..)
 
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
@@ -14,4 +14,4 @@ init = (Main, Cmd.none)
 
 view : Model -> (Html Event)
 view model = 
-    div[style "display" "none"] [Html.text "Dashboard"]
+    div[style "display" "none"] [Html.text "WidgetRepo"]

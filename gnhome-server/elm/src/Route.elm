@@ -6,7 +6,7 @@ import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
 type Route
     = NotFound
     | Dashboard
-    | Widgets
+    | WidgetRepo
 
 
 
@@ -14,8 +14,7 @@ parser : Parser (Route -> a) a
 parser = 
     oneOf
         [   Parser.map Dashboard Parser.top
-        ,   Parser.map Dashboard (s "m")
-        ,   Parser.map Widgets (s "m/widgets")
+        ,   Parser.map WidgetRepo (s "widgets")
         ]
 
 parseUrl : Url -> Route

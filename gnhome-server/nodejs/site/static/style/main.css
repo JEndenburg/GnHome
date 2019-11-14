@@ -271,6 +271,45 @@ main div
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+.notif
+{
+    position: fixed;
+    top: 5vh;
+    z-index: 2000000;
+    background-color: gray;
+    padding: 1vh;
+    font-size: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-left: 4vh;
+    padding-right: 4vh;
+    border-radius: 5vh;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 1vh rgba(0,0,0,0.4);
+}
+
+.notif.info
+{
+    background-color: blue;
+}
+
+.notif.warning
+{
+    background-color: orangered;
+}
+
+.notif.error
+{
+    background-color: red;
+}
+
+.notif::selection
+{
+    background-color: none;
+}
+
 @media (orientation: landscape)
 {
     #loading::after

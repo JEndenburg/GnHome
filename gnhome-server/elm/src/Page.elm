@@ -26,15 +26,16 @@ viewNavigationBar =
     [   div [id "nav-header"] [text "Menu"]
     ,   span [id "nav-collapse"] [ i [class "fa fa-angle-right"] [] ]
     ,   ul []
-        [   viewNavigationElement [] "Dashboard" "dashboard"
-        ,   viewNavigationElementDisabled [] "Settings" "gear"
+        [   viewNavigationElement [] "Dashboard" "dashboard" "/"
+        ,   viewNavigationElement [] "Widgets" "cubes" "/widgets"
+        ,   viewNavigationElementDisabled [] "Settings" "gear" "/"
         ,   hr [] []
         ]
     ]
 
-viewNavigationElement : List (Html.Attribute msg) -> String -> String -> Html msg
-viewNavigationElement attributes name icon = 
-    Html.a [ Attributes.href "javascript:;" ]
+viewNavigationElement : List (Html.Attribute msg) -> String -> String -> String -> Html msg
+viewNavigationElement attributes name icon url = 
+    Html.a [ Attributes.href url ]
     [
         li attributes
         [   span [class "text"] [text name]
@@ -42,9 +43,9 @@ viewNavigationElement attributes name icon =
         ]
     ]
 
-viewNavigationElementDisabled : List (Html.Attribute msg) -> String -> String -> Html msg
-viewNavigationElementDisabled attributes name icon = 
-    viewNavigationElement ((class "Disabled")::attributes) name icon
+viewNavigationElementDisabled : List (Html.Attribute msg) -> String -> String -> String -> Html msg
+viewNavigationElementDisabled attributes name icon url = 
+    viewNavigationElement ((class "Disabled")::attributes) name icon url
 
 viewFooter : Html msg
 viewFooter = 

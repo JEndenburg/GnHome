@@ -9,6 +9,9 @@ import Route exposing(Route)
 
 import Page
 import Page.Dashboard
+import Page.WidgetRepo
+
+import Page.Error.NotFound
 
 type alias Model = 
     {   route : Route
@@ -19,10 +22,15 @@ type alias Model =
 type Page
     = NotFound
     | Dashboard Page.Dashboard.Model
+    | WidgetRepo Page.WidgetRepo.Model
 
 type Event
     = UrlChanged Url.Url
     | UrlRequested Browser.UrlRequest
+    | NotFoundEvent Page.Error.NotFound.Event
+    | DashboardEvent Page.Dashboard.Event
+    | WidgetRepoEvent Page.WidgetRepo.Event
+    | None
 
 main = Browser.application
     {   init = initialModel
@@ -54,6 +62,8 @@ update event model =
                 Browser.External href -> ( model, Navigator.load href )
         UrlChanged url ->
             ({model | route = (Route.parseUrl url)}, Cmd.none)
+            |> changePage
+        _ -> (model, Cmd.none)
 
 
 changePage : (Model, Cmd msg) -> (Model, Cmd msg)
@@ -63,7 +73,7 @@ changePage (model, ev) =
             case model.route of
                 Route.NotFound -> ( NotFound, Cmd.none )
                 Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, subCmds )
-                Route.Widgets -> let (subModel, subCmds) = Page.Dashboard.init in ( NotFound, subCmds )
+                Route.WidgetRepo -> let (subModel, subCmds) = Page.WidgetRepo.init in ( WidgetRepo subModel, subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
@@ -78,10 +88,15 @@ view : Model -> Browser.Document Event
 view model = 
     {   title = "GnHome"
     ,   body = 
-        List.append
-        Page.view
-        [   case model.page of
-                NotFound -> div [] []
-                Dashboard subModel -> div [] []
-        ]
+            List.append
+                Page.view
+                [
+                case model.page of
+                    NotFound -> Page.Error.NotFound.view
+                        |> Html.map NotFoundEvent
+                    Dashboard subModel -> Page.Dashboard.view subModel
+                        |> Html.map DashboardEvent
+                    WidgetRepo subModel -> Page.WidgetRepo.view subModel
+                        |> Html.map WidgetRepoEvent
+                ]
     }
