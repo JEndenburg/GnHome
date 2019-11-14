@@ -255,7 +255,7 @@ main div
 #loading::after
 {
     content: "";
-    background-image: url("../img/loading.png");
+    background-image: url("/img/loading.png");
     position: absolute;
     background-repeat: no-repeat;
     background-position: center;
@@ -265,10 +265,46 @@ main div
     top: 50%;
 }
 
+.loading
+{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    opacity: 0.9;
+    width: 20vh;
+    height: 20vh;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 20%;
+    animation: load-pulse 1s infinite ease-in-out alternate;
+}
+
+.loading::after
+{
+    display: block;
+    position: relative;
+    content: "";
+    background-image: url("../img/loading.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    animation: load-rotate 2s infinite linear;
+    width: 20vh;
+    height: 20vh;
+    top: 50%;
+    left: 50%;
+}
+
 @keyframes load-rotate
 {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes load-pulse
+{
+    from { background-color: rgba(108,108,108,0.5); }
+    to { background-color: rgba(148, 148, 148, 0.5); }
 }
 
 .notif

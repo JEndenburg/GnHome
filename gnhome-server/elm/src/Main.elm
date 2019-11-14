@@ -30,7 +30,6 @@ type Event
     | NotFoundEvent Page.Error.NotFound.Event
     | DashboardEvent Page.Dashboard.Event
     | WidgetRepoEvent Page.WidgetRepo.Event
-    | None
 
 main = Browser.application
     {   init = initialModel
@@ -55,25 +54,30 @@ initialModel _ url key =
 
 update : Event -> Model -> (Model, Cmd Event)
 update event model = 
-    case event of
-        UrlRequested request ->
+    case (event, model.page) of
+        (UrlRequested request, _) ->
             case request of
                 Browser.Internal url -> ( model, Navigator.pushUrl model.navKey (Url.toString url) )
                 Browser.External href -> ( model, Navigator.load href )
-        UrlChanged url ->
+        (UrlChanged url, _) ->
             ({model | route = (Route.parseUrl url)}, Cmd.none)
-            |> changePage
-        _ -> (model, Cmd.none)
+                |> changePage
+
+        (WidgetRepoEvent ev, WidgetRepo page) ->
+            let (subModel, subCmd) = Page.WidgetRepo.update ev page
+            in ({model | page = WidgetRepo subModel}, Cmd.map WidgetRepoEvent subCmd)
+
+        (_,_) -> (model, Cmd.none)
 
 
-changePage : (Model, Cmd msg) -> (Model, Cmd msg)
+changePage : (Model, Cmd Event) -> (Model, Cmd Event)
 changePage (model, ev) = 
     let
         (page, mappedCommands) = 
             case model.route of
-                Route.NotFound -> ( NotFound, Cmd.none )
-                Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, subCmds )
-                Route.WidgetRepo -> let (subModel, subCmds) = Page.WidgetRepo.init in ( WidgetRepo subModel, subCmds )
+                Route.NotFound -> let (subModel, subCmds) = Page.Error.NotFound.init in ( NotFound, Cmd.map NotFoundEvent subCmds )
+                Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, Cmd.map DashboardEvent subCmds )
+                Route.WidgetRepo -> let (subModel, subCmds) = Page.WidgetRepo.init in ( WidgetRepo subModel, Cmd.map WidgetRepoEvent subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
