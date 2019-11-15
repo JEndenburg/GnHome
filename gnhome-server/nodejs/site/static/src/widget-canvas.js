@@ -82,23 +82,49 @@ class WidgetCanvas extends CanvasObject
 
     updateWidgetList()
     {
+        const widgetElements = document.querySelectorAll(".widget");
+
         for(let widget of this.widgetList)
         {
-            console.log(widget);
+            widget.detach();
         }
 
-        const widgetElements = document.querySelectorAll(".widget");
         this._widgetList = [];
 
         let index = 0;
         for(let widget of widgetElements)
         {
+            if(!this.isElementPositioned(widget))
+                this.positionElementToCenterOfScreen(widget);
             this._widgetList[index] = new WidgetWindow(widget, this);
             this.setFocus(this._widgetList[index]);
             index++;
         }
     }
 
+    /**
+     * 
+     * @param {Element} element 
+     */
+    isElementPositioned(element)
+    {
+        return element.style.left.endsWith("px");
+    }
+
+    /**
+     * 
+     * @param {Element} element 
+     */
+    positionElementToCenterOfScreen(element)
+    {
+        const centerX = (document.body.offsetWidth / 2) + document.body.offsetLeft;
+        const centerY = (document.body.offsetHeight / 2) + document.body.offsetTop;
+        const elementCenterX = (element.offsetWidth / 2) + element.offsetLeft;
+        const elementCenterY = (element.offsetHeight / 2) + element.offsetTop;
+        element.style.left = (centerX - elementCenterX) + "px";
+        element.style.top = (centerY - elementCenterY) + "px";
+    }
+    
     /**
      * @param {boolean} value
      */

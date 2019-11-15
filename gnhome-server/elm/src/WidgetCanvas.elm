@@ -133,7 +133,7 @@ constructWidgetListHTML widgetList =
 constructWidgetHTML : Widget -> Html Event
 constructWidgetHTML widget = 
     if widget.active then
-        Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" "128px", Html.Attributes.style "left" "128px"] 
+        Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" "0vw", Html.Attributes.style "left" "0vw"] 
         [
             Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
             Html.iframe 
