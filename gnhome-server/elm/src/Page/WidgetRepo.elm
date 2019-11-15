@@ -1,4 +1,4 @@
-module Page.WidgetRepo exposing (..)
+port module Page.WidgetRepo exposing (..)
 
 import Html exposing (Html, text, div, hr, table, tr, td, th, button)
 import Html.Attributes exposing (style, class, id)
@@ -39,6 +39,10 @@ type alias Widget =
 graphqlURL =
     "/api/graphql?query={main{widgets{name version description active}}}"
 
+port refreshWidgetCanvas : () -> Cmd msg
+
+
+
 init : (Model, Cmd Event)
 init = (Loading, fetchWidgetList)
 
@@ -50,7 +54,7 @@ update event model =
                 Ok widgetList -> (Loaded widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
         OnToggleToggled widget state -> (model, toggleWidgetState widget)
-        OnWidgetStateToggled res -> (model, fetchWidgetList)
+        OnWidgetStateToggled res -> (model, Cmd.batch [fetchWidgetList, refreshWidgetCanvas ()])
 
 
 view : Model -> (Html Event)

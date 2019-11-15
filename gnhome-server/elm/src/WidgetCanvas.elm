@@ -1,4 +1,4 @@
-module WidgetCanvas exposing (..)
+port module WidgetCanvas exposing (..)
 
 import Browser
 import Html exposing(Html, div, text)
@@ -18,6 +18,7 @@ type Event
         Http.Error
         (List Widget)
     )
+    | OnRefresh ()
 
 type alias Widget =
     {
@@ -38,6 +39,8 @@ type alias Size =
 
 graphqlURL =
     "/api/graphql?query={main{widgets{name version uuid size{width height} active}}}"
+
+port refreshWidgetCanvas : (() -> msg) -> Sub msg
 
 graphqlRequestBody : Http.Body
 graphqlRequestBody =
@@ -64,7 +67,7 @@ update event model = updateView event model
 
 subscriptions : Model -> Sub Event
 subscriptions model =
-    Sub.none
+    refreshWidgetCanvas OnRefresh
 
 
 
@@ -76,6 +79,8 @@ updateView event model =
             case response of
                 Ok widgetList -> (Succeed widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
+        OnRefresh _ ->
+            (model, fetchWidgetList)
 
 
 getView : Model -> Html Event

@@ -8,13 +8,18 @@
     </head>
     <body>
         <script>
-                const app = Elm.Main.init();
+            const app = Elm.Main.init();
+
         </script>
         <main><div id="widget-canvas"></div></main>
         <script src="../src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"));
+
+            app.ports.refreshWidgetCanvas.subscribe(() => {
+                canvasApp.ports.refreshWidgetCanvas.send(null);
+            });
         </script>
     </body>
 </HTML>
