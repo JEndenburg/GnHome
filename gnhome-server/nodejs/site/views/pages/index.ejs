@@ -10,6 +10,50 @@
         <script>
             const app = Elm.Main.init();
 
+            function getStateData(uuid, widgetStates)
+            {
+                for(let state of widgetStates)
+                {
+                    if(state.uuid == uuid)
+                    {
+                        return {
+                            position: state.position
+                        };
+                    }
+                }
+                
+                return null;
+            }
+
+            async function getWidgetsForUser(userUUID, target)
+            {
+                let response = await fetch("/api/graphql?query={main{widgets{name version description size{width height}uuid}}}");
+                let jsonObject = await response.json();
+                let widgets = jsonObject.data.main.widgets;
+                response = await fetch(`/api/graphql?query={getWidgetState(userUUID%3A \"${userUUID}\"){data{position{x y z}uuid}}}`);
+                jsonObject = await response.json();
+
+                let widgetStates = jsonObject.data.getWidgetState.data;
+                let userWidgets = [];
+
+                for(let widget of widgets)
+                {
+                    let stateData = getStateData(widget.uuid, widgetStates);
+                    if(stateData != null)
+                    {
+                        userWidgets.push({
+                            uuid: widget.uuid,
+                            name: widget.name,
+                            version: widget.version,
+                            size: widget.size,
+                            position: stateData.position,
+                        });
+                    }
+                }
+
+                canvasApp.ports.onGetWidgetsForUser.send(userWidgets);
+            }
+
         </script>
         <main><div id="widget-canvas"></div></main>
         <script src="../src/widget-canvas.js"></script>
@@ -20,6 +64,8 @@
             app.ports.refreshWidgetCanvas.subscribe(() => {
                 canvasApp.ports.refreshWidgetCanvas.send(null);
             });
+
+            canvasApp.ports.getWidgetsForUser.subscribe(async () => getWidgetsForUser(BigInt(13377331)))
         </script>
     </body>
 </HTML>

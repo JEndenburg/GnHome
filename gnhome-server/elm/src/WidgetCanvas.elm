@@ -4,7 +4,7 @@ import Browser
 import Html exposing(Html, div, text)
 import Html.Attributes exposing(id)
 import Http
-import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool)
+import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool, float)
 
 type Model
     = Loading
@@ -12,13 +12,8 @@ type Model
     | Succeed (List Widget)
 
 type Event
-    = OnWidgetListDecoded
-    (
-        Result
-        Http.Error
-        (List Widget)
-    )
-    | OnRefresh ()
+    =  OnRefresh ()
+    | OnWidgetListJSONReceived JSON.Value
 
 type alias Widget =
     {
@@ -26,7 +21,7 @@ type alias Widget =
         name : String,
         version : String,
         size : Size,
-        active : Bool
+        position: Position
     }
 
 type alias Size =
@@ -35,16 +30,17 @@ type alias Size =
         height: Int
     }
 
+type alias Position = 
+    {   x : Float
+    ,   y : Float
+    ,   z : Float
+    }
 
-
-graphqlURL =
-    "/api/graphql?query={main{widgets{name version uuid size{width height} active}}}"
-
+    
+port getWidgetsForUser : () -> Cmd msg
+port onGetWidgetsForUser : (JSON.Value -> msg) -> Sub msg
 port refreshWidgetCanvas : (() -> msg) -> Sub msg
 
-graphqlRequestBody : Http.Body
-graphqlRequestBody =
-    Http.stringBody "plain/text" "{main{widgets{name html{responseJson}}}}"
 
 
 
@@ -57,7 +53,7 @@ main = Browser.element
     }
 
 initialModel : () -> (Model, Cmd Event)
-initialModel _ = (Loading, fetchWidgetList)
+initialModel _ = (Loading, getWidgetsForUser ())
 
 view : Model -> Html Event
 view model = getView model
@@ -66,8 +62,10 @@ update : Event -> Model -> (Model, Cmd Event)
 update event model = updateView event model
 
 subscriptions : Model -> Sub Event
-subscriptions model =
-    refreshWidgetCanvas OnRefresh
+subscriptions model = Sub.batch 
+    [   (refreshWidgetCanvas OnRefresh)
+    ,   (onGetWidgetsForUser OnWidgetListJSONReceived)
+    ]
 
 
 
@@ -75,12 +73,12 @@ subscriptions model =
 updateView : Event -> Model -> (Model, Cmd Event)
 updateView event model = 
     case event of
-        OnWidgetListDecoded response ->
-            case response of
+        OnRefresh _ ->
+            (model, getWidgetsForUser ())
+        OnWidgetListJSONReceived json ->
+            case JSON.decodeValue widgetArrayDecoder json of
                 Ok widgetList -> (Succeed widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
-        OnRefresh _ ->
-            (model, fetchWidgetList)
 
 
 getView : Model -> Html Event
@@ -102,12 +100,9 @@ successView widgetList model = div[] [ constructWidgetListHTML widgetList ]
 
 
 
-fetchWidgetList : Cmd Event
-fetchWidgetList = Http.get { url = graphqlURL, expect = Http.expectJson OnWidgetListDecoded widgetArrayDecoder }
-
 widgetArrayDecoder : Decoder (List Widget)
 widgetArrayDecoder =
-    JSON.at ["data", "main", "widgets"] (list widgetDecoder)
+    (list widgetDecoder)
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
@@ -116,13 +111,20 @@ widgetDecoder =
         (field "name" string)
         (field "version" string)
         (field "size" (sizeDecoder))
-        (field "active" bool)
+        (field "position" (positionDecoder))
 
 sizeDecoder : Decoder Size
 sizeDecoder = 
     JSON.map2 Size
         (field "width" int)
         (field "height" int)
+
+positionDecoder : Decoder Position
+positionDecoder = 
+    JSON.map3 Position
+        (field "x" float)
+        (field "y" float)
+        (field "z" float)
 
 constructWidgetListHTML : (List Widget) -> Html Event
 constructWidgetListHTML widgetList = 
@@ -132,17 +134,14 @@ constructWidgetListHTML widgetList =
 
 constructWidgetHTML : Widget -> Html Event
 constructWidgetHTML widget = 
-    if widget.active then
-        Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" "0vw", Html.Attributes.style "left" "0vw"] 
+    Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" (String.fromFloat widget.position.y ++ "px"), Html.Attributes.style "left" (String.fromFloat widget.position.x ++ "px")] 
+    [
+        Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
+        Html.iframe 
         [
-            Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
-            Html.iframe 
-            [
-                Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
-                Html.Attributes.width widget.size.width,
-                Html.Attributes.height widget.size.height
-            ] [],
-            Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
-        ]
-    else
-        div[] []
+            Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
+            Html.Attributes.width widget.size.width,
+            Html.Attributes.height widget.size.height
+        ] [],
+        Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
+    ]
