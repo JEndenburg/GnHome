@@ -134,7 +134,7 @@ constructWidgetListHTML widgetList =
 
 constructWidgetHTML : Widget -> Html Event
 constructWidgetHTML widget = 
-    Html.article [Html.Attributes.class "widget", Html.Attributes.style "top" (String.fromFloat widget.position.y ++ "px"), Html.Attributes.style "left" (String.fromFloat widget.position.x ++ "px")] 
+    Html.article [Html.Attributes.id ("w-" ++ (String.fromInt widget.uuid)), Html.Attributes.class "widget", Html.Attributes.style "top" (String.fromFloat widget.position.y ++ "px"), Html.Attributes.style "left" (String.fromFloat widget.position.x ++ "px")] 
     [
         Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
         Html.iframe 

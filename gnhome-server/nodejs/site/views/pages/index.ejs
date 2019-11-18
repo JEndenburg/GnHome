@@ -108,7 +108,6 @@
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({query : `mutation{deleteWidgetState(userUUID:\"${userUUID}\"widgetUUID:\"${widgetUUID}\"){statusCode}}`}),
                 });
-                console.log(response);
             }
 
         </script>
@@ -116,7 +115,7 @@
         <script src="../src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
-            const widgetCanvas = new WidgetCanvas(document.querySelector("main"));
+            const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));
 
             canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
             app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))

@@ -53,8 +53,9 @@ class WidgetCanvas extends CanvasObject
     /**
      * 
      * @param {HTMLElement} observerTarget 
+     * @param {bigint} userUUID
      */
-    constructor(observerTarget)
+    constructor(observerTarget, userUUID)
     {
         super(observerTarget);
         this._observer = new MutationObserver((m,o) => this.updateWidgetList());
@@ -64,6 +65,7 @@ class WidgetCanvas extends CanvasObject
                 subtree : true,
             });
 
+        this._user = userUUID;
         this._widgetList = [];
         this._focusWidget = null;
         this._elementBeingDragged = false;
@@ -80,6 +82,11 @@ class WidgetCanvas extends CanvasObject
         return this._widgetList;
     }
 
+    get userUUID()
+    {
+        return this._user;
+    }
+
     updateWidgetList()
     {
         const widgetElements = document.querySelectorAll(".widget");
@@ -94,35 +101,10 @@ class WidgetCanvas extends CanvasObject
         let index = 0;
         for(let widget of widgetElements)
         {
-            if(!this.isElementPositioned(widget))
-                this.positionElementToCenterOfScreen(widget);
             this._widgetList[index] = new WidgetWindow(widget, this);
             this.setFocus(this._widgetList[index]);
             index++;
         }
-    }
-
-    /**
-     * 
-     * @param {Element} element 
-     */
-    isElementPositioned(element)
-    {
-        return element.style.left.endsWith("px");
-    }
-
-    /**
-     * 
-     * @param {Element} element 
-     */
-    positionElementToCenterOfScreen(element)
-    {
-        const centerX = (document.body.offsetWidth / 2) + document.body.offsetLeft;
-        const centerY = (document.body.offsetHeight / 2) + document.body.offsetTop;
-        const elementCenterX = (element.offsetWidth / 2) + element.offsetLeft;
-        const elementCenterY = (element.offsetHeight / 2) + element.offsetTop;
-        element.style.left = (centerX - elementCenterX) + "px";
-        element.style.top = (centerY - elementCenterY) + "px";
     }
     
     /**
@@ -230,6 +212,7 @@ class WidgetWindow extends CanvasObject
     constructor(widgetElement, canvas)
     {
         super(widgetElement);
+        this._uuid = BigInt(widgetElement.id.substr(2));
         this._elementDragBar = widgetElement.querySelector(".widget-bar");
         this._elementFrameBlocker = widgetElement.querySelector(".blocker");
         this._canvas = canvas;
@@ -309,6 +292,7 @@ class WidgetWindow extends CanvasObject
     {
         document.onmouseup = document.onmousemove = null;
         this._canvas.blockedWidgets = false;
+        this.updatePosition();
     }
 
     /**
@@ -333,5 +317,17 @@ class WidgetWindow extends CanvasObject
     get zIndex()
     {
         return Number(this._element.style.zIndex);
+    }
+
+    async updatePosition()
+    {
+        let userUUID = this._canvas.userUUID;
+        let x = this.x - this._canvas.x;
+        let y = this.y - this._canvas.y;
+        let response = await fetch("/api/graphql", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({query : `mutation{setWidgetState(userUUID:\"${userUUID}\"widgetUUID:\"${this._uuid}\"x:${x}y:${y}z:${this.zIndex}){statusCode}}`}),
+        });
     }
 }
