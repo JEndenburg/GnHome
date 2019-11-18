@@ -34,7 +34,7 @@ app.get("/mock/api/weather.json", (req, res) => {
      res.send(report); 
 }); //THIS IS A MOCK API
 
-uploadHandler(app);
+uploadHandler(app, __dirname);
 
 app.get("/*", renderIndexPage);
 
