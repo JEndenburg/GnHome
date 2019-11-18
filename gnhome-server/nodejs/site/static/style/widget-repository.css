@@ -53,9 +53,42 @@
     border-color: var(--repo-table-border-color);
 }
 
-#upload-widget
+#upload-widget, #upload-widget-cancel
 {
     top: 2.5vh;
     right: 2.5vh;
     position: absolute;
+}
+
+#app-files
+{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10vh;
+}
+
+#app-files input
+{
+    border-style: solid;
+    border-width: 0.25vh;
+    border-color: var(--primary-color);
+    background-color: white;
+    padding: 2vh;
+    border-radius: 1vh;
+    font-size: 1.5vh;
+    color: black;
+}
+
+#app-upload
+{
+    margin-top: 3vh;
+    text-align: center;
+}
+
+#app-upload button
+{
+    width: auto;
+    height: auto;
+    padding: 1.5vh;
+    border-radius: 1vh;
 }

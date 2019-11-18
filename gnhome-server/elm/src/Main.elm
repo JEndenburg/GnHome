@@ -10,6 +10,7 @@ import Route exposing(Route)
 import Page
 import Page.Dashboard
 import Page.WidgetRepo
+import Page.NewWidget
 
 import Page.Error.NotFound
 
@@ -23,6 +24,7 @@ type Page
     = NotFound
     | Dashboard Page.Dashboard.Model
     | WidgetRepo Page.WidgetRepo.Model
+    | NewWidget Page.NewWidget.Model
 
 type Event
     = UrlChanged Url.Url
@@ -30,6 +32,7 @@ type Event
     | NotFoundEvent Page.Error.NotFound.Event
     | DashboardEvent Page.Dashboard.Event
     | WidgetRepoEvent Page.WidgetRepo.Event
+    | NewWidgetEvent Page.NewWidget.Event
 
 main = Browser.application
     {   init = initialModel
@@ -78,6 +81,7 @@ changePage (model, ev) =
                 Route.NotFound -> let (subModel, subCmds) = Page.Error.NotFound.init in ( NotFound, Cmd.map NotFoundEvent subCmds )
                 Route.WidgetRepo -> let (subModel, subCmds) = Page.WidgetRepo.init in ( WidgetRepo subModel, Cmd.map WidgetRepoEvent subCmds )
                 Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, Cmd.map DashboardEvent subCmds )
+                Route.NewWidget -> let (subModel, subCmds) = Page.NewWidget.init in ( NewWidget subModel, Cmd.map NewWidgetEvent subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
@@ -109,5 +113,7 @@ view model =
                         |> Html.map DashboardEvent
                     WidgetRepo subModel -> Page.WidgetRepo.view subModel
                         |> Html.map WidgetRepoEvent
+                    NewWidget subModel -> Page.NewWidget.view subModel
+                        |> Html.map NewWidgetEvent
                 ]
     }
