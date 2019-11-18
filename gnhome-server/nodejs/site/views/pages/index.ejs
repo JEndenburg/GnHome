@@ -1,10 +1,10 @@
 <HTML>
     <head>
         <%- include ../partials/head.ejs %>
-        <script src="../src/elm/Main.js"></script>
-        <script src="../src/elm/WidgetCanvas.js"></script>
-        <script src="../src/nav.js" defer></script>
-        <script src="../src/dark-mode-switch.js" defer></script>
+        <script src="/src/elm/Main.js"></script>
+        <script src="/src/elm/WidgetCanvas.js"></script>
+        <script src="/src/nav.js" defer></script>
+        <script src="/src/dark-mode-switch.js" defer></script>
     </head>
     <body>
         <script>
@@ -112,7 +112,7 @@
 
         </script>
         <main><div id="widget-canvas"></div></main>
-        <script src="../src/widget-canvas.js"></script>
+        <script src="/src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));

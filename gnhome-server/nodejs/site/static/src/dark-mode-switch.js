@@ -10,7 +10,7 @@ function _dm_updateMode()
 {
     localStorage.setItem("_dm_darkmode", _dm_switch.checked);
     document.getElementById("color-style").setAttribute("href", 
-        _dm_switch.checked ? "../style/colors/light.css" : "../style/colors/dark.css"
+        _dm_switch.checked ? "/style/colors/light.css" : "/style/colors/dark.css"
     );
 }
 

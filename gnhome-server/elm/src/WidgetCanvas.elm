@@ -139,7 +139,7 @@ constructWidgetHTML widget =
         Html.div [Html.Attributes.class "widget-bar"] [ text (widget.name ++ " (" ++ widget.version ++ ")") ],
         Html.iframe 
         [
-            Html.Attributes.src ("../widget/" ++ (String.fromInt widget.uuid)),
+            Html.Attributes.src ("/widget/" ++ (String.fromInt widget.uuid)),
             Html.Attributes.width widget.size.width,
             Html.Attributes.height widget.size.height
         ] [],

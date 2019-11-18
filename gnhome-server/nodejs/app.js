@@ -35,6 +35,11 @@ app.get("/mock/api/weather.json", (req, res) => {
 
 app.get("/*", renderIndexPage);
 
+app.post("/*", (req, res) => {
+    console.log(req.body);
+    res.send(418);
+});
+
 /**
  * 
  * @param {express.Request} req 

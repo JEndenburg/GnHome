@@ -1,7 +1,7 @@
 module Page.NewWidget exposing (..)
 
 import Html exposing (Html, text, div, button, hr, form, label, input, textarea)
-import Html.Attributes exposing (style, class, id, type_, placeholder)
+import Html.Attributes exposing (style, class, id, type_, placeholder, action)
 import Html.Events exposing (onCheck)
 
 import ContentUtil
@@ -25,7 +25,7 @@ view model = ContentUtil.viewModal
     [div [ class "modal-header" ] [ text "Upload a Widget" ]
     ,   Html.a [ id "upload-widget-cancel", Html.Attributes.href "/widgets" ] [ button [] [Html.i [class "fa fa-minus"] []] ]
     ,   hr [] []
-    ,   form []
+    ,   form [action "/widgets/new/submit"]
         [   div [id "app-name"] 
             [   label [] [text "App Name"]
             ,   input [type_ "text", placeholder "MyFirstApp"] [] 
