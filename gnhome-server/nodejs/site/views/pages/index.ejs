@@ -68,7 +68,7 @@
                 {
                     let stateData = getStateData(widget.uuid, widgetStates);
                     widgetInfo.push({
-                        uuid: widget.uuid,
+                        uuid: widget.uuid.toString(),
                         name: widget.name,
                         description: widget.description,
                         version: widget.version,
@@ -76,7 +76,39 @@
                     });
                 }
                 
-                app.ports.onWidgetListJSONObtained.send(widgetInfo), 1000;
+                app.ports.onWidgetListJSONObtained.send(widgetInfo);
+            }
+
+            async function toggleWidgetState(userUUID, widgetUUID, newState)
+            {
+                if(newState == true)
+                    enableWidgetForUser(userUUID, widgetUUID);
+                else
+                    disableWidgetForUser(userUUID, widgetUUID);
+
+                await getWidgetsWithActiveState(userUUID);
+                canvasApp.ports.refreshWidgetCanvas.send(null);
+            }
+
+            async function enableWidgetForUser(userUUID, widgetUUID)
+            {
+                const centerX = (document.body.offsetWidth / 2) + document.body.offsetLeft;
+                const centerY = (document.body.offsetHeight / 2) + document.body.offsetTop;
+                let response = await fetch("/api/graphql", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({query : `mutation{setWidgetState(userUUID:\"${userUUID}\"widgetUUID:\"${widgetUUID}\"x:${centerX}y:${centerY}z:0){statusCode}}`}),
+                });
+            }
+
+            async function disableWidgetForUser(userUUID, widgetUUID)
+            {
+                let response = await fetch("/api/graphql", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({query : `mutation{deleteWidgetState(userUUID:\"${userUUID}\"widgetUUID:\"${widgetUUID}\"){statusCode}}`}),
+                });
+                console.log(response);
             }
 
         </script>
@@ -86,12 +118,9 @@
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"));
 
-            app.ports.refreshWidgetCanvas.subscribe(() => {
-                canvasApp.ports.refreshWidgetCanvas.send(null);
-            });
-
             canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
             app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))
+            app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
         </script>
     </body>
 </HTML>

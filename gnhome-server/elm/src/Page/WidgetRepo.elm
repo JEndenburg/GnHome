@@ -16,23 +16,18 @@ type Model
 
 type Event
     = OnToggleToggled Widget Bool
-    | OnWidgetStateToggled
-    (
-        Result
-        Http.Error
-        Bool
-    )
     | OnWidgetJSONObtained JSON.Value
 
 type alias Widget =
     {   name : String
+    ,   uuid: String
     ,   version : String
     ,   description : String
     ,   active : Bool
     }
 
-port refreshWidgetCanvas : () -> Cmd msg
 port fetchWidgetList : () -> Cmd msg
+port toggleWidgetState : JEncode.Value -> Cmd msg
 port onWidgetListJSONObtained : (JSON.Value -> msg) -> Sub msg
 
 
@@ -42,8 +37,7 @@ init = (Loading, fetchWidgetList ())
 update : Event -> Model -> (Model, Cmd Event)
 update event model = 
     case event of
-        OnToggleToggled widget state -> (model, toggleWidgetState widget)
-        OnWidgetStateToggled res -> (model, Cmd.batch [fetchWidgetList (), refreshWidgetCanvas ()])
+        OnToggleToggled widget state -> (model, toggleWidgetState (toggleWidgetStateValue widget))
         OnWidgetJSONObtained json ->
             case JSON.decodeValue widgetArrayDecoder json of
                 Ok widgetList -> (Loaded widgetList, Cmd.none)
@@ -114,27 +108,27 @@ widgetArrayDecoder =
 
 widgetDecoder : Decoder Widget
 widgetDecoder =
-    JSON.map4 Widget
+    JSON.map5 Widget
         (field "name" string)
+        (field "uuid" string)
         (field "version" string)
         (field "description" string)
         (field "active" bool)
 
-toggleWidgetState : Widget -> Cmd Event
-toggleWidgetState widget =
-    let
-        stringBool = 
-            if widget.active then
-                "false"
-            else
-                "true"
-    in
-        Http.post 
-            {   url = "/api/graphql"
-            ,   body = Http.jsonBody (JEncode.object [ ( "query", JEncode.string ("mutation{setWidget(name:\"" ++ widget.name ++ "\"active:" ++ stringBool ++ ")}") ) ])
-            ,   expect = Http.expectJson OnWidgetStateToggled widgetStateChangeResultDecoder 
-            }
-
 widgetStateChangeResultDecoder : Decoder Bool
 widgetStateChangeResultDecoder = 
     JSON.at ["data", "setWidget"] bool
+
+toggleWidgetStateValue : Widget -> JEncode.Value
+toggleWidgetStateValue widget = 
+    JEncode.object
+    [   ("uuid", JEncode.string widget.uuid)
+    ,   ("newState", JEncode.bool
+            (
+            if widget.active then
+                False
+            else
+                True
+            )
+        )
+    ]
