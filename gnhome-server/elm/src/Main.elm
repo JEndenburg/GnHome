@@ -76,17 +76,24 @@ changePage (model, ev) =
         (page, mappedCommands) = 
             case model.route of
                 Route.NotFound -> let (subModel, subCmds) = Page.Error.NotFound.init in ( NotFound, Cmd.map NotFoundEvent subCmds )
-                Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, Cmd.map DashboardEvent subCmds )
                 Route.WidgetRepo -> let (subModel, subCmds) = Page.WidgetRepo.init in ( WidgetRepo subModel, Cmd.map WidgetRepoEvent subCmds )
+                Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, Cmd.map DashboardEvent subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
     )
     
 
+    
+-- An ugly workaround for something that's either unexpected behaviour in the elm runtime, or a flaw within the foundation of this application.
+
+-- I'd expect that you subscribe based on the model on a per-page module case, though this seems to not trigger correctly.
+-- The workaround makes it so that the SPA is always subscribed to the subscriptions expected from every single page.
 subscriptions : Model -> Sub Event
 subscriptions model =
-    Sub.none
+    Sub.batch
+    [   (Sub.map WidgetRepoEvent (Page.WidgetRepo.subscriptions))
+    ]
 
 view : Model -> Browser.Document Event
 view model = 

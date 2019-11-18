@@ -15,19 +15,14 @@ type Model
     | Failed
 
 type Event
-    = OnWidgetListDecoded
-    (
-        Result
-        Http.Error
-        (List Widget)
-    )
-    | OnToggleToggled Widget Bool
+    = OnToggleToggled Widget Bool
     | OnWidgetStateToggled
     (
         Result
         Http.Error
         Bool
     )
+    | OnWidgetJSONObtained JSON.Value
 
 type alias Widget =
     {   name : String
@@ -36,25 +31,29 @@ type alias Widget =
     ,   active : Bool
     }
 
-graphqlURL =
-    "/api/graphql?query={main{widgets{name version description active}}}"
-
 port refreshWidgetCanvas : () -> Cmd msg
-
+port fetchWidgetList : () -> Cmd msg
+port onWidgetListJSONObtained : (JSON.Value -> msg) -> Sub msg
 
 
 init : (Model, Cmd Event)
-init = (Loading, fetchWidgetList)
+init = (Loading, fetchWidgetList ())
 
 update : Event -> Model -> (Model, Cmd Event)
 update event model = 
     case event of
-        OnWidgetListDecoded res ->
-            case res of
+        OnToggleToggled widget state -> (model, toggleWidgetState widget)
+        OnWidgetStateToggled res -> (model, Cmd.batch [fetchWidgetList (), refreshWidgetCanvas ()])
+        OnWidgetJSONObtained json ->
+            case JSON.decodeValue widgetArrayDecoder json of
                 Ok widgetList -> (Loaded widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
-        OnToggleToggled widget state -> (model, toggleWidgetState widget)
-        OnWidgetStateToggled res -> (model, Cmd.batch [fetchWidgetList, refreshWidgetCanvas ()])
+
+subscriptions : Sub Event
+subscriptions =
+    Sub.batch
+        [onWidgetListJSONObtained OnWidgetJSONObtained
+        ]
 
 
 view : Model -> (Html Event)
@@ -109,12 +108,9 @@ viewWidget widget =
     ,   td [class "button"] [ ContentUtil.viewToggle [ onCheck (OnToggleToggled widget) ] widget.active ]
     ]
 
-fetchWidgetList : Cmd Event
-fetchWidgetList = Http.get { url = graphqlURL, expect = Http.expectJson OnWidgetListDecoded widgetArrayDecoder }
-
 widgetArrayDecoder : Decoder (List Widget)
 widgetArrayDecoder =
-    JSON.at ["data", "main", "widgets"] (list widgetDecoder)
+    (list widgetDecoder)
 
 widgetDecoder : Decoder Widget
 widgetDecoder =

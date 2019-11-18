@@ -25,7 +25,7 @@
                 return null;
             }
 
-            async function getWidgetsForUser(userUUID, target)
+            async function getWidgetsForUser(userUUID)
             {
                 let response = await fetch("/api/graphql?query={main{widgets{name version description size{width height}uuid}}}");
                 let jsonObject = await response.json();
@@ -50,8 +50,33 @@
                         });
                     }
                 }
-
                 canvasApp.ports.onGetWidgetsForUser.send(userWidgets);
+            }
+
+            async function getWidgetsWithActiveState(userUUID)
+            {
+                let response = await fetch("/api/graphql?query={main{widgets{name version description size{width height}uuid}}}");
+                let jsonObject = await response.json();
+                let widgets = jsonObject.data.main.widgets;
+                response = await fetch(`/api/graphql?query={getWidgetState(userUUID%3A \"${userUUID}\"){data{position{x y z}uuid}}}`);
+                jsonObject = await response.json();
+
+                let widgetStates = jsonObject.data.getWidgetState.data;
+                let widgetInfo = [];
+
+                for(let widget of widgets)
+                {
+                    let stateData = getStateData(widget.uuid, widgetStates);
+                    widgetInfo.push({
+                        uuid: widget.uuid,
+                        name: widget.name,
+                        description: widget.description,
+                        version: widget.version,
+                        active: (stateData != null),
+                    });
+                }
+                
+                app.ports.onWidgetListJSONObtained.send(widgetInfo), 1000;
             }
 
         </script>
@@ -65,7 +90,8 @@
                 canvasApp.ports.refreshWidgetCanvas.send(null);
             });
 
-            canvasApp.ports.getWidgetsForUser.subscribe(async () => getWidgetsForUser(BigInt(13377331)))
+            canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
+            app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))
         </script>
     </body>
 </HTML>
