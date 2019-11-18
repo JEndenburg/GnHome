@@ -52,3 +52,10 @@
     border-width: 0.1vh;
     border-color: var(--repo-table-border-color);
 }
+
+#upload-widget
+{
+    top: 2.5vh;
+    right: 2.5vh;
+    position: absolute;
+}

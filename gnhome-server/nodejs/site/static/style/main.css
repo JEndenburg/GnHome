@@ -357,6 +357,34 @@ main div
     transition: 0.2s;
 }
 
+button
+{
+    height: 5vh;
+    width: 5vh;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-size: 3vh;
+    font-weight: bold;
+    color: var(--header-nav-text-color);
+    border-style: groove;
+    border-radius: 100%;
+    text-align: center;
+    padding: 0;
+    border-width: 0.25vh;
+}
+
+button:hover
+{
+    background-color: var(--primary-unfocus-color);
+    border-color: var(--primary-unfocus-color);
+}
+
+button:active
+{
+    background-color: var(--primary-border-color);
+    border-color: var(--primary-border-color);
+}
+
 @media (orientation: landscape)
 {
     #loading::after

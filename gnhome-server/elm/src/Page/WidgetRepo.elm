@@ -54,6 +54,7 @@ view : Model -> (Html Event)
 view model = 
     ContentUtil.viewModal
     [   div [ class "modal-header" ] [ text "Manage Widgets" ]
+    ,   Html.a [ id "upload-widget", Html.Attributes.href "/widgets/new" ] [ button [] [Html.i [class "fa fa-plus"] []] ]
     ,   hr [] []
     ,   case model of
             Loading -> viewLoad
