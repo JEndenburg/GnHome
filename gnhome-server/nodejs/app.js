@@ -2,6 +2,7 @@ const express = require("express");
 const widgetLoader = require("./lib/widget-loader");
 const interface = require("gnhome-interface");
 const APIGraphQL = require("./lib/api/graphql-api");
+const uploadHandler = require("./lib/widget-uploader");
 const port = 8000;
 
 widgetLoader.loadWidgets(__dirname + "/widgets");
@@ -33,12 +34,9 @@ app.get("/mock/api/weather.json", (req, res) => {
      res.send(report); 
 }); //THIS IS A MOCK API
 
-app.get("/*", renderIndexPage);
+uploadHandler(app);
 
-app.post("/*", (req, res) => {
-    console.log(req.body);
-    res.send(418);
-});
+app.get("/*", renderIndexPage);
 
 /**
  * 
