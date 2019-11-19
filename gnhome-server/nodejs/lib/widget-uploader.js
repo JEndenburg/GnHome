@@ -30,31 +30,32 @@ function init(app, root, callback)
     app.post("/api/widget", uploadHandler.fields([{name: "back-end", maxCount: 1},{name: "front-end", maxCount: 1}]), (req, res, next) => {
         if(areFilesValid(req.files))
         {
-            if(!isInRange(req.body.name, nameLengthRange))
-                res.status(400).render("pages/uploading/invalid-auth.ejs");
-
-            else if(!isInRange(req.body.version, versionLengthRange))
-                res.status(400).render("pages/uploading/invalid-auth.ejs");
-
-            else if(!isInRange(req.body.description, descriptionLengthRange))
-                res.status(400).render("pages/uploading/invalid-auth.ejs");
-
-            else
+            try
             {
-                try
+                const uuid = BigInt(req.body.id);
+                if(!isValidAuthentication(uuid, req.body.auth))
+                    res.status(403).render("pages/uploading/invalid-auth.ejs");
+                else
                 {
-                    saveFiles(req.files, root, () => {
-                        finishedFiled++;
-
-                        if(finishedFiled === expectedFiles)
-                            callback();
-                    });
-                    res.status(200).render("pages/uploading/success.ejs");
+                    try
+                    {
+                        saveFiles(req.files, root, uuid, () => {
+                            finishedFiled++;
+    
+                            if(finishedFiled === expectedFiles)
+                                callback();
+                        });
+                        res.status(200).render("pages/uploading/success.ejs");
+                    }
+                    catch(exception)
+                    {
+                        res.status(500).send("An internal server error occured:<br/>" + exception);
+                    }
                 }
-                catch(exception)
-                {
-                    res.status(500).send("An internal server error occured:<br/>" + exception);
-                }
+            }
+            catch(ex)
+            {
+                res.status(400).render("pages/uploading/invalid-auth.ejs");
             }
         }
         else
@@ -62,6 +63,16 @@ function init(app, root, callback)
             res.status(400).render("pages/uploading/invalid-file.ejs");
         }
     });
+}
+
+/**
+ * 
+ * @param {BigInt} uuid 
+ * @param {String} authenticationSecret 
+ */
+function isValidAuthentication(uuid, authenticationSecret)
+{
+    return true;
 }
 
 /**
@@ -96,14 +107,15 @@ function areFilesValid(files)
  * 
  * @param {Express.Multer.File[]} files 
  * @param {String} rootFolder
+ * @param {BigInt} uuid
  * @param {Function} callback
  */
-function saveFiles(files, rootFolder, callback)
+function saveFiles(files, rootFolder, uuid, callback)
 {
     for(let fieldName in files)
     {
         let stream = null;
-        let location = rootFolder + locations[fieldName] + "\\1337";
+        let location = rootFolder + locations[fieldName] + "\\" + uuid.toString();
         let fileLocation = location + "\\temp.zip";
         
         if(!fs.existsSync(location))
