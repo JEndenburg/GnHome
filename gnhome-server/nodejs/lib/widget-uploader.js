@@ -15,6 +15,9 @@ const locations = {
     "front-end" : "\\site\\static\\widget",
 }
 
+const secret = Math.round(Math.random() * 1000000000).toString("16");
+console.log("Secret for this session is " + secret);
+
 
 /**
  * 
@@ -74,7 +77,7 @@ function init(app, root, callback)
  */
 function isValidAuthentication(uuid, authenticationSecret)
 {
-    return true;
+    return authenticationSecret == secret;
 }
 
 /**
