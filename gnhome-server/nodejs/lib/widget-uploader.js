@@ -3,6 +3,7 @@ module.exports = init;
 const multer = require("multer");
 const express = require("express");
 const fs = require("fs");
+const admZip = require("adm-zip");
 
 const uploadHandler = multer();
 
@@ -12,8 +13,8 @@ const versionLengthRange = { min: 1, max: 20 }
 const descriptionLengthRange = { min: 20, max: 1000 }
 
 const locations = {
-    "back-end" : "\\test\\back",
-    "front-end" : "\\test\\front",
+    "back-end" : "\\widgets",
+    "front-end" : "\\site\\static\\widget",
 }
 
 
@@ -21,9 +22,11 @@ const locations = {
  * 
  * @param {express.Express} app 
  * @param {String} root
+ * @param {Function} callback
  */
-function init(app, root)
+function init(app, root, callback)
 {
+    let finishedFiled = 0;
     app.post("/api/widget", uploadHandler.fields([{name: "back-end", maxCount: 1},{name: "front-end", maxCount: 1}]), (req, res, next) => {
         if(areFilesValid(req.files))
         {
@@ -38,8 +41,20 @@ function init(app, root)
 
             else
             {
-                saveFiles(req.files, root);
-                res.status(200).send("🎉");
+                try
+                {
+                    saveFiles(req.files, root, () => {
+                        finishedFiled++;
+
+                        if(finishedFiled === expectedFiles)
+                            callback();
+                    });
+                    res.status(200).send("🎉");
+                }
+                catch(exception)
+                {
+                    res.status(500).send("An internal server error occured:<br/>" + exception);
+                }
             }
         }
         else
@@ -81,29 +96,40 @@ function areFilesValid(files)
  * 
  * @param {Express.Multer.File[]} files 
  * @param {String} rootFolder
+ * @param {Function} callback
  */
-function saveFiles(files, rootFolder)
+function saveFiles(files, rootFolder, callback)
 {
     for(let fieldName in files)
     {
         let stream = null;
-        let location = rootFolder + locations[fieldName];
+        let location = rootFolder + locations[fieldName] + "\\1337";
+        let fileLocation = location + "\\temp.zip";
+        
+        if(!fs.existsSync(location))
+        fs.mkdirSync(location);
 
-        try
-        {
-            if(!fs.existsSync(location))
-                fs.mkdirSync(location);
-            stream = fs.createWriteStream(location + "\\herp.zip");
+        stream = fs.createWriteStream(fileLocation);
+
+        stream.on("ready", (fd) => {
             stream.write(files[fieldName][0].buffer, (e) => {});
-        }
-        catch(exception)
-        {
-            console.log(exception);
-        }
-        finally
-        {
-            if(stream != null)
-                stream.end();
-        }
+            stream.end();
+        });
+
+        stream.on("close", () => {
+            unzipFile(location, fileLocation);
+            callback();
+        });
     }
+}
+
+/**
+ * 
+ * @param {String} folderLocation 
+ * @param {String} fileLocation 
+ */
+function unzipFile(folderLocation, fileLocation)
+{
+    const zipFile = new admZip(fileLocation);
+    zipFile.extractAllTo(folderLocation, true);
 }

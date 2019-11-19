@@ -34,7 +34,11 @@ app.get("/mock/api/weather.json", (req, res) => {
      res.send(report); 
 }); //THIS IS A MOCK API
 
-uploadHandler(app, __dirname);
+uploadHandler(app, __dirname, () => {
+    widgetLoader.clear();
+    interface.clearWidgetList();
+    widgetLoader.loadWidgets(__dirname + "/widgets");
+});
 
 app.get("/*", renderIndexPage);
 
