@@ -23,6 +23,11 @@ function getWidgetList()
     return _widgetList;
 }
 
+function clearWidgetList() 
+{
+    _widgetList = [];
+}
+
 
 exports = module.exports = {};
 
@@ -30,3 +35,4 @@ exports.Widget = Widget;
 exports.registerWidget = registerWidget;
 exports.getWidgetList = getWidgetList;
 exports.Response = Response;
+exports.clearWidgetList = clearWidgetList;
