@@ -112,7 +112,7 @@
 
             function executeSearch(searchQuery)
             {
-                const regex = new RegExp(".*" + searchQuery.toLowerCase() + ".*");
+                const regex = new RegExp(".*" + escape(searchQuery.toLowerCase()) + ".*");
                 const widgetRepo = document.getElementById("widget-repo");
             
                 let element = widgetRepo.firstElementChild;
@@ -124,7 +124,7 @@
                     {
                         const name = element.querySelector(".name").innerText;
                         
-                        element.style.display = (regex.test(name.toLowerCase())) ? "" : "none";
+                        element.style.display = (regex.test(escape(name.toLowerCase()))) ? "" : "none";
 
                         element = element.nextElementSibling;
                     }
