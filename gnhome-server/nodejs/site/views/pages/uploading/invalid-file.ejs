@@ -1,0 +1,32 @@
+<HTML>
+    <head>
+        <%- include ../../partials/head.ejs %>
+        <link href="/style/upload.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="modal">
+            <main>
+                <h1>Upload failed: Invalid filetype</h1>
+                <p>Make sure you're uploading .zip files.<br/>You will be redirected back to the application in a few seconds.</p>
+                <a id="small" href="/">Or click here if this doesn't happen quick enough.</a>
+            </main>
+        </div>
+
+        <script>
+            let fade = 1.0;
+            const modal = document.getElementById("modal");
+            function fadeOut()
+            {
+                fade -= 0.01;
+
+                modal.style.opacity = fade;
+
+                if(fade <= 0)
+                    window.location.replace("/");
+            }
+
+            setTimeout(() => setInterval(fadeOut, 10), 5000);
+
+        </script>
+    </body>
+</HTML>

@@ -31,13 +31,13 @@ function init(app, root, callback)
         if(areFilesValid(req.files))
         {
             if(!isInRange(req.body.name, nameLengthRange))
-                res.status(400).send("Name out of bounds.");
+                res.status(400).render("pages/uploading/invalid-auth.ejs");
 
             else if(!isInRange(req.body.version, versionLengthRange))
-                res.status(400).send("Version out of bounds.");
+                res.status(400).render("pages/uploading/invalid-auth.ejs");
 
             else if(!isInRange(req.body.description, descriptionLengthRange))
-                res.status(400).send("Description out of bounds.");
+                res.status(400).render("pages/uploading/invalid-auth.ejs");
 
             else
             {
@@ -49,7 +49,7 @@ function init(app, root, callback)
                         if(finishedFiled === expectedFiles)
                             callback();
                     });
-                    res.status(200).send("🎉");
+                    res.status(200).render("pages/uploading/success.ejs");
                 }
                 catch(exception)
                 {
@@ -59,7 +59,7 @@ function init(app, root, callback)
         }
         else
         {
-            res.status(400).send("Invalid files.");
+            res.status(400).render("pages/uploading/invalid-file.ejs");
         }
     });
 }
