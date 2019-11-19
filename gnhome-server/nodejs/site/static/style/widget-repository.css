@@ -92,3 +92,10 @@
     padding: 1.5vh;
     border-radius: 1vh;
 }
+
+#widget-search
+{
+    position: absolute;
+    top: 4vh;
+    right: 10vh;
+}

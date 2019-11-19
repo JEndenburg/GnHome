@@ -109,6 +109,27 @@
                     body: JSON.stringify({query : `mutation{deleteWidgetState(userUUID:\"${userUUID}\"widgetUUID:\"${widgetUUID}\"){statusCode}}`}),
                 });
             }
+
+            function executeSearch(searchQuery)
+            {
+                const regex = new RegExp(".*" + searchQuery.toLowerCase() + ".*");
+                const widgetRepo = document.getElementById("widget-repo");
+            
+                let element = widgetRepo.firstElementChild;
+                while(element != null)
+                {
+                    if(element.id == "")
+                        element = element.nextElementSibling;
+                    else
+                    {
+                        const name = element.querySelector(".name").innerText;
+                        
+                        element.style.display = (regex.test(name.toLowerCase())) ? "" : "none";
+
+                        element = element.nextElementSibling;
+                    }
+                }
+            }
             
         </script>
         <main><div id="widget-canvas"></div></main>
@@ -120,6 +141,7 @@
             canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
             app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))
             app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
+            app.ports.executeSearch.subscribe((query) => executeSearch(query));
         </script>
     </body>
 </HTML>

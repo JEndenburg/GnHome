@@ -1,8 +1,8 @@
 port module Page.WidgetRepo exposing (..)
 
 import Html exposing (Html, text, div, hr, table, tr, td, th, button, form, input)
-import Html.Attributes exposing (style, class, id, type_, placeholder)
-import Html.Events exposing (onCheck)
+import Html.Attributes exposing (style, class, id, type_, placeholder, action)
+import Html.Events exposing (onCheck, onSubmit, onInput)
 import Http
 import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool)
 import Json.Encode as JEncode
@@ -17,10 +17,12 @@ type Model
 type Event
     = OnToggleToggled Widget Bool
     | OnWidgetJSONObtained JSON.Value
+    | OnFormSubmit
+    | OnSearchChange String
 
 type alias Widget =
     {   name : String
-    ,   uuid: String
+    ,   uuid : String
     ,   version : String
     ,   description : String
     ,   active : Bool
@@ -28,6 +30,7 @@ type alias Widget =
 
 port fetchWidgetList : () -> Cmd msg
 port toggleWidgetState : JEncode.Value -> Cmd msg
+port executeSearch : String -> Cmd msg
 port onWidgetListJSONObtained : (JSON.Value -> msg) -> Sub msg
 
 
@@ -42,6 +45,8 @@ update event model =
             case JSON.decodeValue widgetArrayDecoder json of
                 Ok widgetList -> (Loaded widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
+        OnSearchChange input -> (model, executeSearch input)
+        _ -> (model, Cmd.none)
 
 subscriptions : Sub Event
 subscriptions =
@@ -83,8 +88,8 @@ viewLoaded widgetList =
 viewSearch : Html Event
 viewSearch = 
     div[id "widget-search", class "search-bar"]
-    [   form []
-        [   input [type_ "text", placeholder "search"] []
+    [   form [onSubmit OnFormSubmit ]
+        [   input [type_ "text", placeholder "search", onInput OnSearchChange] []
         ,   Html.i [class "fa fa-search"] []
         ]
     ]
@@ -106,7 +111,7 @@ viewWidgetList widgetList =
 
 viewWidget : Widget -> Html Event
 viewWidget widget = 
-    tr []
+    tr [id widget.uuid]
     [   td [class "name"] [ text widget.name ]
     ,   td [class "version"] [ text widget.version ]
     ,   td [class "description"] [ text widget.description ]
