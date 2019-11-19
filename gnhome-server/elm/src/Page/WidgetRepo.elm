@@ -1,7 +1,7 @@
 port module Page.WidgetRepo exposing (..)
 
-import Html exposing (Html, text, div, hr, table, tr, td, th, button)
-import Html.Attributes exposing (style, class, id)
+import Html exposing (Html, text, div, hr, table, tr, td, th, button, form, input)
+import Html.Attributes exposing (style, class, id, type_, placeholder)
 import Html.Events exposing (onCheck)
 import Http
 import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool)
@@ -55,6 +55,7 @@ view model =
     ContentUtil.viewModal
     [   div [ class "modal-header" ] [ text "Manage Widgets" ]
     ,   Html.a [ id "upload-widget", Html.Attributes.href "/widgets/new" ] [ button [] [Html.i [class "fa fa-plus"] []] ]
+    ,   viewSearch
     ,   hr [] []
     ,   case model of
             Loading -> viewLoad
@@ -78,6 +79,15 @@ viewLoaded widgetList =
     (
         List.append viewTableHeaders (viewWidgetList widgetList)
     )
+
+viewSearch : Html Event
+viewSearch = 
+    div[id "widget-search", class "search-bar"]
+    [   form []
+        [   input [type_ "text", placeholder "search"] []
+        ,   Html.i [class "fa fa-search"] []
+        ]
+    ]
 
 viewTableHeaders : List (Html Event)
 viewTableHeaders = 
