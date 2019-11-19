@@ -8,9 +8,7 @@ const admZip = require("adm-zip");
 const uploadHandler = multer();
 
 const expectedFiles = 2;
-const nameLengthRange = { min: 4, max: 30 };
-const versionLengthRange = { min: 1, max: 20 }
-const descriptionLengthRange = { min: 20, max: 1000 }
+const fileMaxSize = 1000000;
 
 const locations = {
     "back-end" : "\\widgets",
@@ -28,7 +26,8 @@ function init(app, root, callback)
 {
     let finishedFiled = 0;
     app.post("/api/widget", uploadHandler.fields([{name: "back-end", maxCount: 1},{name: "front-end", maxCount: 1}]), (req, res, next) => {
-        if(areFilesValid(req.files))
+        let validationResult = -3;
+        if((validationResult = areFilesValid(req.files)) === 0)
         {
             try
             {
@@ -60,7 +59,10 @@ function init(app, root, callback)
         }
         else
         {
-            res.status(400).render("pages/uploading/invalid-file.ejs");
+            if(validationResult == -2)
+                res.status(400).render("pages/uploading/too-big.ejs");
+            else
+                res.status(400).render("pages/uploading/invalid-file.ejs");
         }
     });
 }
@@ -97,10 +99,12 @@ function areFilesValid(files)
         fileCount++;
         let file = files[fieldName][0];
         if(file.mimetype != "application/x-zip-compressed")
-            return false;
+            return -1;
+        else if(file.size > fileMaxSize)
+            return -2;
     }
 
-    return fileCount === expectedFiles;
+    return (fileCount === expectedFiles) ? 0 : -1;
 }
 
 /**
