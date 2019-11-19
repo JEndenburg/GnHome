@@ -112,7 +112,7 @@
 
             function executeSearch(searchQuery)
             {
-                const regex = new RegExp(".*" + escape(searchQuery.toLowerCase()) + ".*");
+                const regex = new RegExp(".*" + escape(searchQuery.toLowerCase()).replace(/[^\w\*]/g, "").replace(/\*/g, ".*") + ".*");
                 const widgetRepo = document.getElementById("widget-repo");
             
                 let element = widgetRepo.firstElementChild;
