@@ -1,7 +1,8 @@
 port module Page.Settings exposing (..)
 
 import Html exposing (Html, text, div, hr, table, tr, td, select, option)
-import Html.Attributes exposing (class, id)
+import Html.Attributes exposing (class, id, selected)
+import Html.Events exposing (on)
 import Json.Decode as JSON exposing (field, int)
 
 import ContentUtil
@@ -11,13 +12,17 @@ type Model
     | Loaded Settings
     | Failed
 
-type alias Settings = Int
+type alias Settings =
+    {   theme : Int
+    }
 
 type Event
     = OnSettingsJSONReceived JSON.Value
+    | OnThemeChanged String
 
 
 port getSettings : () -> Cmd msg
+port updateSettings : Settings -> Cmd msg
 port receiveSettings : (JSON.Value -> msg) -> Sub msg
 
 
@@ -31,6 +36,10 @@ update event model =
             case JSON.decodeValue settingsDecoder json of
                 Ok settings -> (Loaded settings, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
+        OnThemeChanged themeName ->
+            case model of
+                Loaded settings -> (model, updateSettings { settings | theme = (mapThemeValue themeName)} )
+                _ -> (model, Cmd.none)
 
 view : Model -> (Html Event)
 view model = 
@@ -63,25 +72,45 @@ viewFail =
 viewLoaded : Settings -> Html Event
 viewLoaded settings = 
     table [ id "settings" ]
-    [   viewTableRowDropdown "theme" "Theme" settings ["Light", "Dark"]
+    [   viewThemeDropdown settings.theme [(0, "Light"), (1, "Dark")] 
     ]
 
-viewTableRowDropdown : String -> String -> Int -> List String -> Html Event
-viewTableRowDropdown rowId name value possibleValues = 
-    tr [id rowId]
-    [   td [] [ text name ]
-    ,   select [] (viewDropdown possibleValues)
-
+viewThemeDropdown : Int -> List (Int, String) -> Html Event
+viewThemeDropdown selectedId possibleValues = 
+    tr [id "theme"]
+    [   td [] [ text "Theme" ]
+    ,   select [onChange OnThemeChanged] (viewDropdown selectedId possibleValues)
     ]
 
-viewDropdown : List String -> List (Html Event)
-viewDropdown possibleValues = 
-    List.map (viewDropdownOption) possibleValues
+onChange : (String -> msg) -> Html.Attribute msg
+onChange eventHandler = 
+    on "change" (JSON.map eventHandler (JSON.at ["target", "value"] JSON.string))
 
-viewDropdownOption : String -> Html Event
-viewDropdownOption possibleValue =
-    option [] [ text possibleValue ]
+viewDropdown : Int -> List (Int, String) -> List (Html Event)
+viewDropdown selectedValue possibleValues = 
+    List.map (viewDropdownOption selectedValue) possibleValues
+
+viewDropdownOption : Int -> (Int, String) -> Html Event
+viewDropdownOption selectedValue possibleValue =
+    let
+        (index, name) = possibleValue
+    in
+        option [selected ( selectedValue == index )] [ text name ]
 
 settingsDecoder : JSON.Decoder (Settings)
 settingsDecoder =
-    field "theme" int
+    JSON.map Settings
+        (field "theme" int)
+
+themeDecoder : JSON.Value -> String
+themeDecoder value =
+    case JSON.decodeValue JSON.string value of
+        Ok str -> str
+        Err _ -> ""
+
+mapThemeValue : String -> Int
+mapThemeValue str = 
+    case str of
+        "Light" -> 0
+        "Dark" -> 1
+        _ -> 0

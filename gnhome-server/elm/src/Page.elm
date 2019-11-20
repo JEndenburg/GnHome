@@ -16,7 +16,6 @@ viewHeader : Html msg
 viewHeader = 
     header []
     [   text "GnHome"
-    ,   ContentUtil.viewToggle [id "dark-mode-switch"] False
     ]
 
 viewNavigationBar : Html msg

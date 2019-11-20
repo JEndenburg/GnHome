@@ -4,7 +4,6 @@
         <script src="/src/elm/Main.js"></script>
         <script src="/src/elm/WidgetCanvas.js"></script>
         <script src="/src/nav.js" defer></script>
-        <script src="/src/dark-mode-switch.js" defer></script>
     </head>
     <body>
         <script>
@@ -142,10 +141,31 @@
             function getUserSettings()
             {
                 let settings = {
-                    theme : (localStorage.getItem("theme") || 0)
+                    theme : Number((localStorage.getItem("theme") || 0))
                 };
-                
-                app.ports.receiveSettings.send(settings);
+
+                return settings;
+            }
+
+            function updateUserSettings(settings)
+            {
+                localStorage.setItem("theme", settings.theme);
+                applyUserSettings(settings);
+            }
+            
+            function applyUserSettings(settings)
+            {
+                document.getElementById("color-style").setAttribute("href", "/style/colors/" + getThemeFromId(settings.theme) );
+            }
+
+            function getThemeFromId(id)
+            {
+                switch(id)
+                {
+                    default:
+                    case 0: return "light.css";
+                    case 1: return "dark.css";
+                }
             }
             
         </script>
@@ -160,7 +180,10 @@
             app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)));
             app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
             app.ports.executeSearch.subscribe((query) => executeSearch(query));
-            app.ports.getSettings.subscribe(() => getUserSettings());
+            app.ports.getSettings.subscribe(() => app.ports.receiveSettings.send(getUserSettings()));
+            app.ports.updateSettings.subscribe((settings) => updateUserSettings(settings));
+
+            applyUserSettings(getUserSettings());
         </script>
     </body>
 </HTML>
