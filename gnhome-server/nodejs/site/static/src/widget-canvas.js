@@ -71,7 +71,23 @@ class WidgetCanvas extends CanvasObject
         this._elementBeingDragged = false;
         this._mouseRelativeX = 0;
         this._mouseRelativeY = 0;
+
+        this._speed = { x: 0, y: 0 };
+        this._friction = 1.0;
+        this._maxSpeed = 15;
+        this._acceleration = 1.5;
+
+        this._keysPressed = {
+            up: false,
+            left: false,
+            down: false,
+            right: false,
+        };
+
         observerTarget.onmousedown = (e) => this.onMouseDown(e);
+        document.onkeydown = (e) => this.onKeyPress(e, true);
+        document.onkeyup = (e) => this.onKeyPress(e, false);
+        setInterval(() => this.update(), 10);
     }
 
     /**
@@ -147,7 +163,6 @@ class WidgetCanvas extends CanvasObject
     {
         if(!this._elementBeingDragged)
         {
-            event.preventDefault();
             this.blockedWidgets = true;
             this._mouseRelativeX = event.clientX;
             this._mouseRelativeY = event.clientY;
@@ -177,6 +192,79 @@ class WidgetCanvas extends CanvasObject
         document.onmouseup = document.onmousemove = null;
         this.blockedWidgets = false;
         this._element.classList.remove("grabbed");
+    }
+
+    /**
+     * 
+     * @param {KeyboardEvent} event 
+     * @param {Boolean} isPressedDown
+     */
+    onKeyPress(event, isPressedDown)
+    {
+        switch(event.keyCode)
+        {
+            case 37:
+                this._keysPressed.left = isPressedDown;
+                break;
+            case 38:
+                this._keysPressed.up = isPressedDown;
+                break;
+            case 39:
+                this._keysPressed.right = isPressedDown;
+                break;
+            case 40:
+                this._keysPressed.down = isPressedDown;
+                break;
+            case 32:
+                this._speed.x = this._speed.y = 0;
+                break;
+            case 36:
+                this.moveBy(-this.x, -this.y);
+                break;
+        }
+    }
+
+    update()
+    {
+        this.handleInputVelocity();
+        this.updateVelocity();
+    }
+
+    handleInputVelocity()
+    {
+        if(this._keysPressed.left)
+            this._speed.x += this._acceleration;
+        if(this._keysPressed.up)
+            this._speed.y += this._acceleration;
+        if(this._keysPressed.right)
+            this._speed.x -= this._acceleration;
+        if(this._keysPressed.down)
+            this._speed.y -= this._acceleration;
+
+        if(this._speed.x > this._maxSpeed)
+            this._speed.x = this._maxSpeed;
+        else if(this._speed.x < -this._maxSpeed)
+            this._speed.x = -this._maxSpeed;
+
+        if(this._speed.y > this._maxSpeed)
+            this._speed.y = this._maxSpeed;
+        else if(this._speed.y < -this._maxSpeed)
+            this._speed.y = -this._maxSpeed;
+    }
+
+    updateVelocity()
+    {
+        this.moveBy(this._speed.x, this._speed.y);
+        let signatureOfSpeed = { x: Math.sign(this._speed.x), y: Math.sign(this._speed.y) };
+        if(!this._keysPressed.left && !this._keysPressed.right)
+            this._speed.x -= this._friction * signatureOfSpeed.x;
+        if(!this._keysPressed.up && !this._keysPressed.down)
+            this._speed.y -= this._friction * signatureOfSpeed.y;
+
+        if(Math.sign(this._speed.x) != signatureOfSpeed.x)
+            this._speed.x = 0;
+        if(Math.sign(this._speed.y) != signatureOfSpeed.y)
+            this._speed.y = 0;
     }
 
     /**
