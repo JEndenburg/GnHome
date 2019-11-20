@@ -19,11 +19,11 @@
     --darkmode-affected-text-color: rgb(21, 19, 43);
     --disabled-text-color: rgb(84, 84, 87);
 
-    --repo-table-border-color: rgb(73, 68, 62);
+    --repo-table-border-color: rgb(73, 62, 72);
     --repo-table-color-header: rgb(255, 142, 221);
-    --repo-table-text-color-header: rgb(247, 249, 255);
-    --repo-table-color-even: rgb(211, 211, 211);
-    --repo-table-color-odd: rgb(204, 201, 201);
+    --repo-table-text-color-header: rgb(250, 202, 244);
+    --repo-table-color-even: rgb(228, 187, 224);
+    --repo-table-color-odd: rgb(207, 164, 193);
 
     --toggle-active-color: rgb(163, 163, 163);
     --toggle-inactive-color: rgb(99, 99, 99);
