@@ -241,7 +241,7 @@ class WidgetCanvas extends CanvasObject
                 this._speed.x = this._speed.y = 0;
                 break;
             case 36:
-                this.moveBy(-this.x, -this.y);
+                this.resetPosition();
                 break;
         }
     }
@@ -282,6 +282,11 @@ class WidgetCanvas extends CanvasObject
             this._speed.x = 0;
         if(Math.sign(this._speed.y) != signatureOfSpeed.y)
             this._speed.y = 0;
+    }
+
+    resetPosition()
+    {
+        this.moveBy(-this.x, -this.y);
     }
 
     /**

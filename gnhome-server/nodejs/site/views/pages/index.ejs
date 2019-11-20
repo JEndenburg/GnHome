@@ -146,8 +146,9 @@
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));
 
-            canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
-            app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))
+            canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)));
+            canvasApp.ports.centerView.subscribe(() => widgetCanvas.resetPosition());
+            app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)));
             app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
             app.ports.executeSearch.subscribe((query) => executeSearch(query));
         </script>

@@ -1,8 +1,9 @@
 port module WidgetCanvas exposing (..)
 
 import Browser
-import Html exposing(Html, div, text)
+import Html exposing(Html, div, text, button)
 import Html.Attributes exposing(id)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode as JSON exposing(Decoder, field, list, string, int, bool, float)
 
@@ -14,6 +15,7 @@ type Model
 type Event
     =  OnRefresh ()
     | OnWidgetListJSONReceived JSON.Value
+    | OnCenterViewButtonClicked
 
 type alias Widget =
     {
@@ -37,6 +39,7 @@ type alias Position =
     }
 
     
+port centerView : () -> Cmd msg
 port getWidgetsForUser : () -> Cmd msg
 port onGetWidgetsForUser : (JSON.Value -> msg) -> Sub msg
 port refreshWidgetCanvas : (() -> msg) -> Sub msg
@@ -79,6 +82,8 @@ updateView event model =
             case JSON.decodeValue widgetArrayDecoder json of
                 Ok widgetList -> (Succeed widgetList, Cmd.none)
                 Err _ -> (Failed, Cmd.none)
+        OnCenterViewButtonClicked ->
+            (model, centerView ())
 
 
 getView : Model -> Html Event
@@ -95,7 +100,7 @@ failView : Model -> Html Event
 failView model = div [] [text "Unfortunately, it failed."]
 
 successView : (List Widget) -> Model -> Html Event
-successView widgetList model = div[] [ constructWidgetListHTML widgetList ]
+successView widgetList model = div[] [ constructWidgetListHTML widgetList, viewResetButton ]
 
 
 
@@ -145,3 +150,7 @@ constructWidgetHTML widget =
         ] [],
         Html.div [Html.Attributes.class "blocker", Html.Attributes.hidden True] []
     ]
+
+viewResetButton : Html Event
+viewResetButton = 
+    button [id "reset-button", onClick OnCenterViewButtonClicked ] [Html.i [Html.Attributes.class "fa fa-crosshairs"] []]
