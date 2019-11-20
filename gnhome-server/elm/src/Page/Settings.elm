@@ -79,7 +79,7 @@ viewThemeDropdown : Int -> List (Int, String) -> Html Event
 viewThemeDropdown selectedId possibleValues = 
     tr [id "theme"]
     [   td [] [ text "Theme" ]
-    ,   select [onChange OnThemeChanged] (viewDropdown selectedId possibleValues)
+    ,   td [] [select [onChange OnThemeChanged] (viewDropdown selectedId possibleValues)]
     ]
 
 onChange : (String -> msg) -> Html.Attribute msg
