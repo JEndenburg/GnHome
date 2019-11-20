@@ -72,7 +72,7 @@ viewFail =
 viewLoaded : Settings -> Html Event
 viewLoaded settings = 
     table [ id "settings" ]
-    [   viewThemeDropdown settings.theme [(0, "Light"), (1, "Dark")] 
+    [   viewThemeDropdown settings.theme [(0, "Light"), (1, "Dark"), (2, "Pink"), (3, "Blueless")] 
     ]
 
 viewThemeDropdown : Int -> List (Int, String) -> Html Event
@@ -113,4 +113,6 @@ mapThemeValue str =
     case str of
         "Light" -> 0
         "Dark" -> 1
+        "Pink" -> 2
+        "Blueless" -> 3
         _ -> 0
