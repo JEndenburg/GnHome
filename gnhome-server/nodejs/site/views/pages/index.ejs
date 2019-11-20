@@ -25,6 +25,14 @@
                 return null;
             }
 
+            function adjustPositionAccordingToCanvas(positionIn)
+            {
+                positionIn.x += widgetCanvas.x;
+                positionIn.y += widgetCanvas.y;
+
+                return positionIn;
+            }
+
             async function getWidgetsForUser(userUUID)
             {
                 let response = await fetch("/api/graphql?query={main{widgets{name version description size{width height}uuid}}}");
@@ -46,7 +54,7 @@
                             name: widget.name,
                             version: widget.version,
                             size: widget.size,
-                            position: stateData.position,
+                            position: adjustPositionAccordingToCanvas(stateData.position),
                         });
                     }
                 }
