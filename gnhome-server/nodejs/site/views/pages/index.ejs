@@ -138,6 +138,15 @@
                     }
                 }
             }
+
+            function getUserSettings()
+            {
+                let settings = {
+                    theme : (localStorage.getItem("theme") || 0)
+                };
+                
+                app.ports.receiveSettings.send(settings);
+            }
             
         </script>
         <main><div id="widget-canvas"></div></main>
@@ -151,6 +160,7 @@
             app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)));
             app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
             app.ports.executeSearch.subscribe((query) => executeSearch(query));
+            app.ports.getSettings.subscribe(() => getUserSettings());
         </script>
     </body>
 </HTML>

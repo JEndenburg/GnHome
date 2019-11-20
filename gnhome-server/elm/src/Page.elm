@@ -27,8 +27,8 @@ viewNavigationBar =
     ,   ul []
         [   viewNavigationElement [] "Dashboard" "dashboard" "/"
         ,   viewNavigationElement [] "Widgets" "cubes" "/widgets"
-        ,   viewNavigationElementDisabled [] "Settings" "gear" "/"
         ,   hr [] []
+        ,   viewNavigationElement [] "Settings" "gear" "/settings"
         ]
     ]
 
