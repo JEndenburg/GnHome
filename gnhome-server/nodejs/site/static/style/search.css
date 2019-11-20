@@ -1,0 +1,25 @@
+.search-bar
+{
+    width: 25vh;
+    height: auto;
+}
+
+.search-bar form
+{
+    position: relative;
+    height: 3vh;
+}
+
+.search-bar input[type=text]
+{
+    padding-right: 2.5vh;
+    text-overflow: clip;
+}
+
+.search-bar i.fa
+{
+    position: absolute;
+    right: 0.75vh;
+    top: 0.5vh;
+    font-size: 1.75vh;
+}

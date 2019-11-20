@@ -23,7 +23,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--toggle-inactive-color);
+    background-color: red;
     border-radius: 50px;
     transition: .4s;
 }
@@ -43,7 +43,7 @@
 
 .switch input:checked + .slider 
 {
-    background-color: var(--toggle-active-color);
+    background-color: green
 }
 
 .switch input:checked + .slider:before 

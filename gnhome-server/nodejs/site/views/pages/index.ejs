@@ -1,10 +1,9 @@
 <HTML>
     <head>
         <%- include ../partials/head.ejs %>
-        <script src="../src/elm/Main.js"></script>
-        <script src="../src/elm/WidgetCanvas.js"></script>
-        <script src="../src/nav.js" defer></script>
-        <script src="../src/dark-mode-switch.js" defer></script>
+        <script src="/src/elm/Main.js"></script>
+        <script src="/src/elm/WidgetCanvas.js"></script>
+        <script src="/src/nav.js" defer></script>
     </head>
     <body>
         <script>
@@ -23,6 +22,14 @@
                 }
                 
                 return null;
+            }
+
+            function adjustPositionAccordingToCanvas(positionIn)
+            {
+                positionIn.x += widgetCanvas.x;
+                positionIn.y += widgetCanvas.y;
+
+                return positionIn;
             }
 
             async function getWidgetsForUser(userUUID)
@@ -46,7 +53,7 @@
                             name: widget.name,
                             version: widget.version,
                             size: widget.size,
-                            position: stateData.position,
+                            position: adjustPositionAccordingToCanvas(stateData.position),
                         });
                     }
                 }
@@ -110,16 +117,75 @@
                 });
             }
 
+            function executeSearch(searchQuery)
+            {
+                const regex = new RegExp(".*" + escape(searchQuery.toLowerCase()).replace(/[^\w\*]/g, "").replace(/\*/g, ".*") + ".*");
+                const widgetRepo = document.getElementById("widget-repo");
+            
+                let element = widgetRepo.firstElementChild;
+                while(element != null)
+                {
+                    if(element.id == "")
+                        element = element.nextElementSibling;
+                    else
+                    {
+                        const name = element.querySelector(".name").innerText;
+                        
+                        element.style.display = (regex.test(escape(name.toLowerCase()))) ? "" : "none";
+
+                        element = element.nextElementSibling;
+                    }
+                }
+            }
+
+            function getUserSettings()
+            {
+                let settings = {
+                    theme : Number((localStorage.getItem("theme") || 0))
+                };
+
+                return settings;
+            }
+
+            function updateUserSettings(settings)
+            {
+                localStorage.setItem("theme", settings.theme);
+                applyUserSettings(settings);
+            }
+            
+            function applyUserSettings(settings)
+            {
+                document.getElementById("color-style").setAttribute("href", "/style/colors/" + getThemeFromId(settings.theme) );
+            }
+
+            function getThemeFromId(id)
+            {
+                switch(id)
+                {
+                    default:
+                    case 0: return "light.css";
+                    case 1: return "dark.css";
+                    case 2: return "pink.css";
+                    case 3: return "no-blue.css";
+                }
+            }
+            
         </script>
         <main><div id="widget-canvas"></div></main>
-        <script src="../src/widget-canvas.js"></script>
+        <script src="/src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
             const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));
 
-            canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)))
-            app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)))
+            canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)));
+            canvasApp.ports.centerView.subscribe(() => widgetCanvas.resetPosition());
+            app.ports.fetchWidgetList.subscribe(async () => await getWidgetsWithActiveState(BigInt(13377331)));
             app.ports.toggleWidgetState.subscribe(async (obj) => await toggleWidgetState(BigInt(13377331), BigInt(obj.uuid), obj.newState));
+            app.ports.executeSearch.subscribe((query) => executeSearch(query));
+            app.ports.getSettings.subscribe(() => app.ports.receiveSettings.send(getUserSettings()));
+            app.ports.updateSettings.subscribe((settings) => updateUserSettings(settings));
+
+            applyUserSettings(getUserSettings());
         </script>
     </body>
 </HTML>

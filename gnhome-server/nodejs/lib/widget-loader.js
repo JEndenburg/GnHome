@@ -1,8 +1,10 @@
 module.exports = {
     loadWidgets,
+    clear,
 };
 
 const fs = require("fs");
+let widgetCacheNames = [];
 
 
 function loadWidgets(path)
@@ -11,12 +13,21 @@ function loadWidgets(path)
     return searchWidgets(path, fsEntries);
 }
 
+function clear()
+{
+    for(let cacheName of widgetCacheNames)
+    {
+        require.cache[require.resolve(cacheName)] = null;
+    }
+}
+
 /**
  * @param {string} mainPath
  * @param {string[]} paths 
  */
 function searchWidgets(mainPath, paths)
 {
+    widgetCacheNames = [];
     let widgets = [];
     let wi = 0;
     for(let fi = 0; fi < paths.length; fi++)
@@ -39,7 +50,9 @@ function loadWidget(path)
 {
     try
     {
-        return require(path + "/index.js");
+        const req = require(path + "/index.js");
+        widgetCacheNames.push(path + "/index.js");
+        return req;
     }
     catch(exception)
     {

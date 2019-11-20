@@ -357,6 +357,96 @@ main div
     transition: 0.2s;
 }
 
+button
+{
+    overflow: hidden;
+    height: 5vh;
+    width: 5vh;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-size: 3vh;
+    font-weight: bold;
+    color: var(--header-nav-text-color);
+    border-style: groove;
+    border-radius: 100%;
+    text-align: center;
+    padding: 0;
+    border-width: 0.25vh;
+    cursor: pointer;
+}
+
+button:hover
+{
+    background-color: var(--primary-unfocus-color);
+    border-color: var(--primary-unfocus-color);
+}
+
+button:active
+{
+    background-color: var(--primary-border-color);
+    border-color: var(--primary-border-color);
+}
+
+form label
+{
+    font-size: 2vh;
+    font-weight: bold;
+    padding-left: 2vh;
+}
+
+form input[type=text], input[type=password], textarea
+{
+    font-family: inherit;
+    font-size: 1.5vh;
+    resize: none;
+    width: 100%;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    margin-bottom: 2vh;
+    border-radius: 1vh;
+    border-style: solid;
+    border-width: 0.25vh;
+    border-color: var(--nav-item-disabled-color);
+    background-color: rgb(240, 240, 240);
+}
+
+form input[type=text]:hover, input[type=password]:hover, textarea:hover
+{
+    border-color: lightgray;
+}
+
+form input[type=text]:focus, input[type=password]:focus, textarea:focus
+{
+    border-color: var(--primary-color);
+    background-color: white;
+}
+
+form input[type=text]::placeholder, input[type=password]::placeholder, textarea::placeholder
+{
+    font-style: italic;
+}
+
+form input[type=text], input[type=password]
+{
+    height: 3vh;
+}
+
+form textarea
+{
+    height: 12vh;
+}
+
+#reset-button
+{
+    position: absolute;
+    right: 3vh;
+    bottom: 5vh;
+    width: 8vh;
+    height: 8vh;
+    font-size: 6vh;
+    z-index: 999;
+}
+
 @media (orientation: landscape)
 {
     #loading::after

@@ -16,7 +16,6 @@ viewHeader : Html msg
 viewHeader = 
     header []
     [   text "GnHome"
-    ,   ContentUtil.viewToggle [id "dark-mode-switch"] False
     ]
 
 viewNavigationBar : Html msg
@@ -27,8 +26,8 @@ viewNavigationBar =
     ,   ul []
         [   viewNavigationElement [] "Dashboard" "dashboard" "/"
         ,   viewNavigationElement [] "Widgets" "cubes" "/widgets"
-        ,   viewNavigationElementDisabled [] "Settings" "gear" "/"
         ,   hr [] []
+        ,   viewNavigationElement [] "Settings" "gear" "/settings"
         ]
     ]
 
@@ -49,5 +48,5 @@ viewNavigationElementDisabled attributes name icon url =
 viewFooter : Html msg
 viewFooter = 
     footer []
-    [   text "GnHome v0.0.2"
+    [   text "GnHome v0.0.3"
     ]

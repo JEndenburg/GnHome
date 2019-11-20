@@ -7,6 +7,8 @@ type Route
     = NotFound
     | Dashboard
     | WidgetRepo
+    | NewWidget
+    | Settings
 
 
 
@@ -15,6 +17,8 @@ parser =
     oneOf
         [   Parser.map Dashboard Parser.top
         ,   Parser.map WidgetRepo (s "widgets")
+        ,   Parser.map NewWidget (s "widgets" </> s "new")
+        ,   Parser.map Settings (s "settings")
         ]
 
 parseUrl : Url -> Route

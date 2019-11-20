@@ -71,7 +71,25 @@ class WidgetCanvas extends CanvasObject
         this._elementBeingDragged = false;
         this._mouseRelativeX = 0;
         this._mouseRelativeY = 0;
+
+        this._speed = { x: 0, y: 0 };
+        this._mouseVelocity = { x: 0, y: 0 }
+        this._friction = 1.0;
+        this._maxSpeed = 15;
+        this._acceleration = 1.5;
+        this._active = true;
+
+        this._keysPressed = {
+            up: false,
+            left: false,
+            down: false,
+            right: false,
+            mouse: false,
+        };
         observerTarget.onmousedown = (e) => this.onMouseDown(e);
+        document.onkeydown = (e) => this.onKeyPress(e, true);
+        document.onkeyup = (e) => this.onKeyPress(e, false);
+        setInterval(() => this.update(), 10);
     }
 
     /**
@@ -147,13 +165,15 @@ class WidgetCanvas extends CanvasObject
     {
         if(!this._elementBeingDragged)
         {
-            event.preventDefault();
             this.blockedWidgets = true;
             this._mouseRelativeX = event.clientX;
             this._mouseRelativeY = event.clientY;
             this._element.classList.add("grabbed");
             document.onmousemove = (e) => this.onMouseMove(e);
             document.onmouseup = (e) => this.onMouseUp(e);
+
+            this._speed.x = this._speed.y = 0;
+            this._keysPressed.mouse = true;
         }
     }
 
@@ -163,7 +183,9 @@ class WidgetCanvas extends CanvasObject
      */
     onMouseMove(event)
     {
-        this.moveBy(event.clientX - this._mouseRelativeX, event.clientY - this._mouseRelativeY);
+        this._mouseVelocity.x = event.clientX - this._mouseRelativeX;
+        this._mouseVelocity.y = event.clientY - this._mouseRelativeY;
+        this.moveBy(this._mouseVelocity.x, this._mouseVelocity.y);
         this._mouseRelativeX = event.clientX;
         this._mouseRelativeY = event.clientY;
     }
@@ -175,8 +197,96 @@ class WidgetCanvas extends CanvasObject
     onMouseUp(event)
     {
         document.onmouseup = document.onmousemove = null;
+
+        this._speed.x = this._mouseVelocity.x;
+        this._speed.y = this._mouseVelocity.y;
+        this._keysPressed.mouse = false;
+
         this.blockedWidgets = false;
         this._element.classList.remove("grabbed");
+    }
+
+    /**
+     * 
+     * @param {KeyboardEvent} event 
+     * @param {Boolean} isPressedDown
+     */
+    onKeyPress(event, isPressedDown)
+    {
+        if(!this._active || this._keysPressed.mouse)
+        {
+            this._keysPressed.left =
+                this._keysPressed.right =
+                this._keysPressed.up =
+                this._keysPressed.down =
+                false;
+            return;
+        }
+
+        switch(event.keyCode)
+        {
+            case 37:
+                this._keysPressed.left = isPressedDown;
+                break;
+            case 38:
+                this._keysPressed.up = isPressedDown;
+                break;
+            case 39:
+                this._keysPressed.right = isPressedDown;
+                break;
+            case 40:
+                this._keysPressed.down = isPressedDown;
+                break;
+            case 32:
+                this._speed.x = this._speed.y = 0;
+                break;
+            case 36:
+                this.resetPosition();
+                break;
+        }
+    }
+
+    update()
+    {
+        this._active = document.getElementById("modal-popup") == null;
+        this.handleInputVelocity();
+        this.updateVelocity();
+        this._mouseVelocity.x = this._mouseVelocity.y = 0;
+    }
+
+    handleInputVelocity()
+    {
+        if(this._keysPressed.left && this._speed.x < this._maxSpeed)
+            this._speed.x += this._acceleration;
+        if(this._keysPressed.up && this._speed.y < this._maxSpeed)
+            this._speed.y += this._acceleration;
+        if(this._keysPressed.right && this._speed.x > -this._maxSpeed)
+            this._speed.x -= this._acceleration;
+        if(this._keysPressed.down && this._speed.y > -this._maxSpeed)
+            this._speed.y -= this._acceleration;
+    }
+
+    updateVelocity()
+    {
+        this.moveBy(this._speed.x, this._speed.y);
+        if(this._elementBeingDragged)
+            this._focusWidget.moveBy(-this._speed.x, -this._speed.y);
+
+        let signatureOfSpeed = { x: Math.sign(this._speed.x), y: Math.sign(this._speed.y) };
+        if(!this._keysPressed.left && !this._keysPressed.right)
+            this._speed.x -= this._friction * signatureOfSpeed.x;
+        if(!this._keysPressed.up && !this._keysPressed.down)
+            this._speed.y -= this._friction * signatureOfSpeed.y;
+
+        if(Math.sign(this._speed.x) != signatureOfSpeed.x)
+            this._speed.x = 0;
+        if(Math.sign(this._speed.y) != signatureOfSpeed.y)
+            this._speed.y = 0;
+    }
+
+    resetPosition()
+    {
+        this.moveBy(-this.x, -this.y);
     }
 
     /**
