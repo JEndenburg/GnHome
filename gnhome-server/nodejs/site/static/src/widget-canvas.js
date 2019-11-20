@@ -269,6 +269,9 @@ class WidgetCanvas extends CanvasObject
     updateVelocity()
     {
         this.moveBy(this._speed.x, this._speed.y);
+        if(this._elementBeingDragged)
+            this._focusWidget.moveBy(-this._speed.x, -this._speed.y);
+
         let signatureOfSpeed = { x: Math.sign(this._speed.x), y: Math.sign(this._speed.y) };
         if(!this._keysPressed.left && !this._keysPressed.right)
             this._speed.x -= this._friction * signatureOfSpeed.x;
