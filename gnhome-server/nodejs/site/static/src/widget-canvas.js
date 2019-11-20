@@ -76,6 +76,7 @@ class WidgetCanvas extends CanvasObject
         this._friction = 1.0;
         this._maxSpeed = 15;
         this._acceleration = 1.5;
+        this._active = true;
 
         this._keysPressed = {
             up: false,
@@ -83,7 +84,6 @@ class WidgetCanvas extends CanvasObject
             down: false,
             right: false,
         };
-
         observerTarget.onmousedown = (e) => this.onMouseDown(e);
         document.onkeydown = (e) => this.onKeyPress(e, true);
         document.onkeyup = (e) => this.onKeyPress(e, false);
@@ -201,6 +201,16 @@ class WidgetCanvas extends CanvasObject
      */
     onKeyPress(event, isPressedDown)
     {
+        if(!this._active)
+        {
+            this._keysPressed.left =
+                this._keysPressed.right =
+                this._keysPressed.up =
+                this._keysPressed.down =
+                false;
+            return;
+        }
+
         switch(event.keyCode)
         {
             case 37:
@@ -226,6 +236,7 @@ class WidgetCanvas extends CanvasObject
 
     update()
     {
+        this._active = document.getElementById("modal-popup") == null;
         this.handleInputVelocity();
         this.updateVelocity();
     }
