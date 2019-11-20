@@ -48,5 +48,5 @@ viewNavigationElementDisabled attributes name icon url =
 viewFooter : Html msg
 viewFooter = 
     footer []
-    [   text "GnHome v0.0.3"
+    [   text "GnHome v1.0.0"
     ]
