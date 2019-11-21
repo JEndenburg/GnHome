@@ -24,13 +24,13 @@ class GraphQLQuery
 {
     /**
      * @param {String} queryName
-     * @param {String} queryContent 
+     * @param {String} returnType 
      * @param {Function} callback 
      */
-    constructor(queryName, queryContent, callback)
+    constructor(queryName, returnType, callback)
     {
         this._queryName = queryName;
-        this._queryContent = queryContent;
+        this._returnType = returnType;
         this._callback = callback;
     }
 
@@ -39,9 +39,9 @@ class GraphQLQuery
         return this._queryName;
     }
 
-    get queryContent()
+    get returnType()
     {
-        return this._queryContent;
+        return this._returnType;
     }
 
     call(params) { return this._callback(params); }
@@ -52,14 +52,12 @@ class GraphQLType
     /**
      * 
      * @param {String} typeName 
-     * @param {String} typeContents 
-     * @param {Function} callback
+     * @param {String[]} typeContents 
      */
-    constructor(typeName, typeContents, callback)
+    constructor(typeName, typeContents)
     {
         this._typeName = typeName;
         this._typeContents = typeContents;
-        this._callback = callback;
     }
 
     get name()
@@ -71,8 +69,6 @@ class GraphQLType
     {
         return this._typeContents;
     }
-
-    call(params) { return this._callback(params); }
 }
 
 exports = module.exports = Schema;
