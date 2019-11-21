@@ -121,7 +121,7 @@ class APIGraphQL extends API
             for(let query of widget.schema.queries)
             {
                 const queryName = `widget_${widget.uuid}__${query.queryName}`;
-                schema += `${queryName} : ${query.returnType}`;
+                schema += `${queryName} : ${query.returnType}\n`;
                 this._root[queryName] = (args) => query.call(args);
             }
         }
@@ -134,7 +134,7 @@ class APIGraphQL extends API
             for(let mutation of widget.schema.mutations)
             {
                 const queryName = `widget_${widget.uuid}__${mutation.queryName}`;
-                schema += `${queryName} : ${mutation.returnType}`;
+                schema += `${queryName} : ${mutation.returnType}\n`;
                 this._root[queryName] = (args) => mutation.call(args);
             }
         }
@@ -149,12 +149,11 @@ class APIGraphQL extends API
                 type ${type_.name}
                 {`;
                 for(let content of type_.contents)
-                    schema += `    ${content}`;
+                    schema += `    ${content}\n`;
                 schema += `
                 }`
             }
         }
-
         expressApp.use("/api/graphql", graphqlHTTP({
             schema: buildSchema(schema),
             rootValue: this.root,
