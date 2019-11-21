@@ -58,3 +58,4 @@ class Widget
 
 exports = module.exports = Widget;
 exports.Size = Size;
+exports.Schema = Schema;
