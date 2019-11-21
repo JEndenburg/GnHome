@@ -1,12 +1,21 @@
-module Page exposing (view)
+module Page exposing (view, Event, update)
 
 import Html exposing (Html, text, nav, div, span, ul, li, i, hr, input, header, label, footer)
 import Html.Attributes as Attributes exposing (id, class, type_, checked)
+import Html.Events exposing (onClick)
 
 import Session exposing (Session)
 import ContentUtil
 
-view : Session -> List (Html msg)
+type Event
+    = OnLogoutClicked
+
+update : Event -> (Cmd Event)
+update event =
+    case event of
+        OnLogoutClicked -> Session.deleteSessionData ()
+
+view : Session -> List (Html Event)
 view session = 
     [   viewNavigationBar session
     ,   viewHeader
@@ -19,7 +28,7 @@ viewHeader =
     [   text "GnHome"
     ]
 
-viewNavigationBar : Session -> Html msg
+viewNavigationBar : Session -> Html Event
 viewNavigationBar session = 
     nav []
     [   div [id "nav-header"] [text "Menu"]
@@ -38,7 +47,7 @@ viewNavigationBar session =
                 ,   viewNavigationElement [] "Widgets" "cubes" "/widgets"
                 ,   hr [] []
                 ,   viewNavigationElement [] "Settings" "gear" "/settings"
-                ,   viewNavigationElementDisabled [] "Login" "user"
+                ,   viewNavigationElement [ onClick OnLogoutClicked ] "Logout" "user" "/"
                 ]
         )
     ]

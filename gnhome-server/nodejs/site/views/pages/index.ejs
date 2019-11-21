@@ -191,6 +191,12 @@
                 }
                 app.ports.receiveSessionData.send(null);
             }
+
+            function deleteSessionData()
+            {
+                document.cookie = "username=LOGOUT; expires=Thu, 14 Jul 1994 07:30:00 UTC; path=/;"
+                app.ports.receiveSessionData.send(null);
+            }
             
         </script>
         <main><div id="widget-canvas"></div></main>
@@ -208,6 +214,7 @@
             app.ports.updateSettings.subscribe((settings) => updateUserSettings(settings));
             app.ports.login.subscribe(() => login());
             app.ports.requestSessionData.subscribe(() => getSessionData());
+            app.ports.deleteSessionData.subscribe(() => deleteSessionData());
 
             applyUserSettings(getUserSettings());
         </script>

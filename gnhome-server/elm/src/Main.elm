@@ -35,6 +35,7 @@ type Page
 type Event
     = UrlChanged Url.Url
     | UrlRequested Browser.UrlRequest
+    | BasePageEvent Page.Event
     | NotFoundEvent Page.Error.NotFound.Event
     | DashboardEvent Page.Dashboard.Event
     | WidgetRepoEvent Page.WidgetRepo.Event
@@ -76,6 +77,10 @@ update event model =
             ({model | route = (Route.parseUrl url)}, Cmd.none)
                 |> changePage
 
+        (BasePageEvent ev, _) ->
+            let subCmd = Page.update ev
+            in (model, Cmd.map BasePageEvent subCmd)
+
         (WidgetRepoEvent ev, WidgetRepo page) ->
             let (subModel, subCmd) = Page.WidgetRepo.update ev page
             in ({model | page = WidgetRepo subModel}, Cmd.map WidgetRepoEvent subCmd)
@@ -93,7 +98,7 @@ update event model =
                 Session.OnSessionChanged maybeUsername ->
                     case maybeUsername of
                         Just username -> changePage ( { model | session = Session.LoggedIn username }, Cmd.none )
-                        Nothing -> (model, Cmd.none)
+                        Nothing -> ( { model | session = Session.Guest }, Cmd.none)
 
         (_,_) -> (model, Cmd.none)
 
@@ -135,7 +140,9 @@ view model =
     {   title = "GnHome"
     ,   body = 
             List.append
-                (Page.view model.session)
+                (Page.view model.session
+                    |> List.map (Html.map BasePageEvent)
+                )
                 [
                 case model.page of
                     NotFound -> Page.Error.NotFound.view

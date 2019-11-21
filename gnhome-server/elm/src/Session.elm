@@ -1,4 +1,4 @@
-port module Session exposing (Session(..), requestSessionData, receiveSessionData, subscriptions, Event(..))
+port module Session exposing (Session(..), requestSessionData, receiveSessionData, deleteSessionData, subscriptions, Event(..))
 
 
 type Session
@@ -10,6 +10,7 @@ type Event
 
 port requestSessionData : () -> Cmd msg
 port receiveSessionData : ((Maybe String) -> msg) -> Sub msg
+port deleteSessionData : () -> Cmd msg
 
 subscriptions : Sub Event
 subscriptions =
