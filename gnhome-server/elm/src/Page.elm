@@ -32,6 +32,10 @@ viewNavigationBar : Session -> Html Event
 viewNavigationBar session = 
     nav []
     [   div [id "nav-header"] [text "Menu"]
+    ,   div [id "nav-username"] [(case session of
+            Session.Guest -> text "Not Logged In"
+            Session.LoggedIn username -> text username
+        )]
     ,   span [id "nav-collapse"] [ i [class "fa fa-angle-right"] [] ]
     ,   ul []
         (case session of
