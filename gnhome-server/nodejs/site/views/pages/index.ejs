@@ -169,6 +169,12 @@
                     case 3: return "no-blue.css";
                 }
             }
+
+            function login()
+            {
+                const username = document.getElementById("username").querySelector("input").value;
+                document.cookie = `username=${username}`;
+            }
             
         </script>
         <main><div id="widget-canvas"></div></main>
@@ -184,6 +190,7 @@
             app.ports.executeSearch.subscribe((query) => executeSearch(query));
             app.ports.getSettings.subscribe(() => app.ports.receiveSettings.send(getUserSettings()));
             app.ports.updateSettings.subscribe((settings) => updateUserSettings(settings));
+            app.ports.login.subscribe(() => login());
 
             applyUserSettings(getUserSettings());
         </script>

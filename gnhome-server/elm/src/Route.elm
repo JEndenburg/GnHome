@@ -9,6 +9,7 @@ type Route
     | WidgetRepo
     | NewWidget
     | Settings
+    | Login
 
 
 
@@ -19,6 +20,7 @@ parser =
         ,   Parser.map WidgetRepo (s "widgets")
         ,   Parser.map NewWidget (s "widgets" </> s "new")
         ,   Parser.map Settings (s "settings")
+        ,   Parser.map Login (s "login")
         ]
 
 parseUrl : Url -> Route

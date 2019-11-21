@@ -12,6 +12,7 @@ import Page.Dashboard
 import Page.WidgetRepo
 import Page.NewWidget
 import Page.Settings
+import Page.Login
 
 import Page.Error.NotFound
 
@@ -27,6 +28,7 @@ type Page
     | WidgetRepo Page.WidgetRepo.Model
     | NewWidget Page.NewWidget.Model
     | Settings Page.Settings.Model
+    | Login Page.Login.Model
 
 type Event
     = UrlChanged Url.Url
@@ -36,6 +38,7 @@ type Event
     | WidgetRepoEvent Page.WidgetRepo.Event
     | NewWidgetEvent Page.NewWidget.Event
     | SettingsEvent Page.Settings.Event
+    | LoginEvent Page.Login.Event
 
 main = Browser.application
     {   init = initialModel
@@ -77,6 +80,10 @@ update event model =
             let (subModel, subCmd) = Page.Settings.update ev page
             in ({model | page = Settings subModel}, Cmd.map SettingsEvent subCmd)
 
+        (LoginEvent ev, Login page) ->
+            let (subModel, subCmd) = Page.Login.update ev page
+            in ({model | page = Login subModel}, Cmd.map LoginEvent subCmd)
+
         (_,_) -> (model, Cmd.none)
 
 
@@ -90,6 +97,7 @@ changePage (model, ev) =
                 Route.Dashboard -> let (subModel, subCmds) = Page.Dashboard.init in ( Dashboard subModel, Cmd.map DashboardEvent subCmds )
                 Route.NewWidget -> let (subModel, subCmds) = Page.NewWidget.init in ( NewWidget subModel, Cmd.map NewWidgetEvent subCmds )
                 Route.Settings -> let (subModel, subCmds) = Page.Settings.init in ( Settings subModel, Cmd.map SettingsEvent subCmds )
+                Route.Login -> let (subModel, subCmds) = Page.Login.init in ( Login subModel, Cmd.map LoginEvent subCmds )
     in
     (   { model | page = page }
     ,   Cmd.batch [ ev, mappedCommands ]
@@ -126,5 +134,7 @@ view model =
                         |> Html.map NewWidgetEvent
                     Settings subModel -> Page.Settings.view subModel
                         |> Html.map SettingsEvent
+                    Login subModel -> Page.Login.view subModel
+                        |> Html.map LoginEvent
                 ]
     }
