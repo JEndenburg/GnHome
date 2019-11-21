@@ -4,35 +4,41 @@ import Html exposing (Html, text, div, hr, form, input, button, label)
 import Html.Attributes exposing (class, id, action, type_, placeholder, required)
 import Html.Events exposing (onSubmit)
 
+import Session exposing(Session)
+
 import ContentUtil
 
-type Model
+type alias Model =
+    {   state : ModelState
+    ,   session : Session
+    }
+
+type ModelState
     = LoggedOut
     | Loading
     | LoggedIn
 
+
 type Event
     = OnLoginSubmit
-    | OnLoggedIn String
 
 
 
 port login : () -> Cmd msg
 
 init : (Model, Cmd Event)
-init = (LoggedOut, Cmd.none)
+init = ({ state = LoggedOut, session = Session.Guest }, Cmd.none)
 
 update : Event -> Model -> (Model, Cmd Event)
 update event model =
     case event of
-        OnLoginSubmit -> (Loading, login ())
-        OnLoggedIn name -> (LoggedIn, Cmd.none)
+        OnLoginSubmit -> ({ model | state = Loading }, login ())
 
 view : Model -> (Html Event)
 view model = ContentUtil.viewModal
     [   div [ class "modal-header" ] [ text (modalHeaderText model) ]
     ,   hr [] []
-    ,   case model of
+    ,   case model.state of
             LoggedOut -> viewLoggedOut
             LoggedIn -> div [] []
             Loading -> viewLoad
@@ -40,7 +46,7 @@ view model = ContentUtil.viewModal
 
 modalHeaderText : Model -> String
 modalHeaderText model = 
-    case model of
+    case model.state of
         LoggedOut -> "Login"
         LoggedIn -> "User Management"
         Loading -> "Login"
@@ -50,7 +56,7 @@ viewLoad = div [class "loading"] []
 
 viewLoggedOut : Html Event
 viewLoggedOut = 
-    form [id "login-form", action "javascript:;", onSubmit OnLoginSubmit] 
+    form [id "login-form", action "/", onSubmit OnLoginSubmit] 
     [   div [ id "username" ]
         [   label [] [ text "Username" ]
         ,   input [ type_ "text", placeholder "Username1234", required True ] []
