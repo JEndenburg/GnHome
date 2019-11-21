@@ -459,6 +459,19 @@ form textarea
     z-index: 999;
 }
 
+#login-form
+{
+    width: 30vw;
+    margin: auto;
+    text-align: center;
+}
+
+#login-form button
+{
+    width: 20vh;
+    border-radius: 1vh;
+}
+
 @media (orientation: landscape)
 {
     #loading::after
