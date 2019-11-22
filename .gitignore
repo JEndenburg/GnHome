@@ -1,7 +1,7 @@
 ## Custom
-# output folder, usually generated content that can be replicated by another dev
 [Oo]utput
 *.credentials
+*.stackdump
 
 ## Elm
 # elm-package generated files
