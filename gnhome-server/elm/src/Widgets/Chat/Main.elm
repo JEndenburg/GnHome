@@ -50,10 +50,10 @@ update : Event -> Model -> (Model, Cmd Event)
 update event model =
     case event of
         OnReceiveSocketMessage socketEvent -> case Socket.update socketEvent of
-            Socket.Connected viewer -> let _ = Debug.log "Connected" () in (model, Cmd.none)
-            Socket.Disconnected ->  let _ = Debug.log "Disconnected" () in (model, Cmd.none)
-            Socket.ReceivedMessage message -> let _ = Debug.log "Received Message" message in (model, Cmd.none)
-            Socket.Invalid -> let _ = Debug.log "Invalid!" () in (model, Cmd.none)
+            Socket.Connected viewer -> (Connected viewer, Cmd.none)
+            Socket.Disconnected -> (Disconnected, Cmd.none)
+            Socket.ReceivedMessage message -> (appendMessageToHistory message model, Cmd.none)
+            Socket.Invalid -> (model, Cmd.none)
         OnSendMessage -> Debug.todo "Implement sending message"
 
 subscriptions : Model -> Sub Event
@@ -61,6 +61,13 @@ subscriptions model = Sub.batch
     [   Sub.map OnReceiveSocketMessage Socket.subscriptions
     ]
 
+
+appendMessageToHistory : Socket.Message -> Model -> Model
+appendMessageToHistory message model =
+    case model of
+        Connected viewer -> Connected { viewer | messages = (viewer.messages ++ [message]) }
+        _ -> Error
+    
 
 viewConnecting : Html Event
 viewConnecting =
@@ -88,15 +95,15 @@ viewMessage message =
 viewTimestamp : Posix -> Html Event
 viewTimestamp posix =
     span [class "timestamp"] [ text 
-        (   (String.fromInt (toYear Time.utc posix)) 
+        (   String.padLeft 4 '0' (String.fromInt (toYear Time.utc posix)) 
         ++  "-"
-        ++  (String.fromInt (monthToInt (toMonth Time.utc posix)))
+        ++  String.padLeft 2 '0' (String.fromInt (monthToInt (toMonth Time.utc posix)))
         ++  "-"
-        ++  (String.fromInt (toDay Time.utc posix))
+        ++  String.padLeft 2 '0' (String.fromInt (toDay Time.utc posix))
         ++  " "
-        ++  (String.fromInt (toHour Time.utc posix))
+        ++  String.padLeft 2 '0' (String.fromInt (toHour Time.utc posix))
         ++  ":"
-        ++  (String.fromInt (toMinute Time.utc posix))
+        ++  String.padLeft 2 '0' (String.fromInt (toMinute Time.utc posix))
         ++ " (UTC)"
         ) ]
 
