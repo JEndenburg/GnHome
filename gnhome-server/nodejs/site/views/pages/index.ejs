@@ -174,7 +174,7 @@
             {
                 const username = document.getElementById("username").querySelector("input").value;
                 document.cookie = `username=${username}`;
-                app.ports.receiveSessionData.send(username);
+                sendSessionData(username);
             }
 
             function getSessionData()
@@ -185,17 +185,23 @@
                     const cookieKVPair = cookie.trim().split('=');
                     if(cookieKVPair[0] == "username")
                     {
-                        app.ports.receiveSessionData.send(cookieKVPair[1]);
+                        sendSessionData(cookieKVPair[1]);
                         return;
                     }
                 }
-                app.ports.receiveSessionData.send(null);
+                sendSessionData(null);
             }
 
             function deleteSessionData()
             {
                 document.cookie = "username=LOGOUT; expires=Thu, 14 Jul 1994 07:30:00 UTC; path=/;"
-                app.ports.receiveSessionData.send(null);
+                sendSessionData(null);
+            }
+
+            function sendSessionData(sessionData)
+            {
+                document.querySelector("main").style.display = (sessionData == null) ? "none" : "";
+                app.ports.receiveSessionData.send(sessionData);
             }
             
         </script>
