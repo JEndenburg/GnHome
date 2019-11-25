@@ -4,6 +4,7 @@ files=(
     "WidgetCanvas"
     "Widgets\\Weather\\Main"
     "Widgets\\Weather\\Mock"
+    "Widgets\\Chat\\Main"
     )
 
 for f in ${files[*]} 

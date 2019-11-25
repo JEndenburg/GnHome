@@ -169,13 +169,52 @@
                     case 3: return "no-blue.css";
                 }
             }
+
+            function login()
+            {
+                const username = document.getElementById("username").querySelector("input").value;
+                document.cookie = `username=${username}`;
+                sendSessionData(username);
+                widgetCanvas.username = username;
+            }
+
+            function getUsername()
+            {
+                const cookies = document.cookie.split(';');
+                for(let cookie of cookies)
+                {
+                    const cookieKVPair = cookie.trim().split('=');
+                    if(cookieKVPair[0] == "username")
+                    {
+                        return cookieKVPair[1];
+                    }
+                }
+                return null;
+            }
+
+            function getSessionData()
+            {
+                sendSessionData(getUsername());
+            }
+
+            function deleteSessionData()
+            {
+                document.cookie = "username=LOGOUT; expires=Thu, 14 Jul 1994 07:30:00 UTC; path=/;"
+                sendSessionData(null);
+            }
+
+            function sendSessionData(sessionData)
+            {
+                document.querySelector("main").style.display = (sessionData == null) ? "none" : "";
+                app.ports.receiveSessionData.send(sessionData);
+            }
             
         </script>
         <main><div id="widget-canvas"></div></main>
         <script src="/src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
-            const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));
+            const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331), getUsername());
 
             canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)));
             canvasApp.ports.centerView.subscribe(() => widgetCanvas.resetPosition());
@@ -184,6 +223,9 @@
             app.ports.executeSearch.subscribe((query) => executeSearch(query));
             app.ports.getSettings.subscribe(() => app.ports.receiveSettings.send(getUserSettings()));
             app.ports.updateSettings.subscribe((settings) => updateUserSettings(settings));
+            app.ports.login.subscribe(() => login());
+            app.ports.requestSessionData.subscribe(() => getSessionData());
+            app.ports.deleteSessionData.subscribe(() => deleteSessionData());
 
             applyUserSettings(getUserSettings());
         </script>

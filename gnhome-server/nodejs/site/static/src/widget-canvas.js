@@ -54,8 +54,9 @@ class WidgetCanvas extends CanvasObject
      * 
      * @param {HTMLElement} observerTarget 
      * @param {bigint} userUUID
+     * @param {String} username
      */
-    constructor(observerTarget, userUUID)
+    constructor(observerTarget, userUUID, username)
     {
         super(observerTarget);
         this._observer = new MutationObserver((m,o) => this.updateWidgetList());
@@ -78,6 +79,8 @@ class WidgetCanvas extends CanvasObject
         this._maxSpeed = 15;
         this._acceleration = 1.5;
         this._active = true;
+
+        this._username = username;
 
         this._keysPressed = {
             up: false,
@@ -103,6 +106,18 @@ class WidgetCanvas extends CanvasObject
     get userUUID()
     {
         return this._user;
+    }
+
+    get username()
+    {
+        return this._username;
+    }
+
+    set username(name)
+    {
+        this._username = name;
+        for(let widget of this.widgetList)
+            widget.username = name;
     }
 
     updateWidgetList()
@@ -330,6 +345,18 @@ class WidgetWindow extends CanvasObject
         this._mouseRelativeY = 0;
 
         this.attach();
+
+        const iFrame = widgetElement.querySelector("iframe");
+        iFrame.addEventListener("load", (e) => {
+            this.username = this._canvas.username;
+        });
+    }
+
+    set username(name)
+    {
+        const iFrame = this._element.querySelector("iframe");
+        if(iFrame.contentWindow.receiveUserData)
+            iFrame.contentWindow.receiveUserData(this._canvas.username);
     }
 
     /**

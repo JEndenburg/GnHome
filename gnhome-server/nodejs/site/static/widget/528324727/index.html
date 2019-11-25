@@ -1,0 +1,126 @@
+<html>
+    <head>
+        <script src="./Main.js"></script>
+        <link href="./style.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <script> 
+        const app = Elm.Widgets.Chat.Main.init();
+        app.ports.sendSocketMessage.subscribe((msg) => sendMessage(msg));
+        let _username = "";
+        let _ws = null;
+
+        function receiveUserData(username)
+        {
+            _username = username;
+            if(_ws != null)
+                _ws.close();
+            connectToServer();
+        }
+
+        function connectToServer()
+        {
+            _ws = new WebSocket("ws://10.10.3.190:9000/");
+            _ws.onmessage = (e) => onMessage(_ws, e.data);
+            _ws.onclose = (e) => onClose(e);
+            _ws.onopen = (e) => onOpen(e);
+        }
+
+        function sendToElm(messageObject)
+        {
+            app.ports.receiveSocketMessage.send(messageObject);
+        }
+
+        function onClose(event)
+        {
+
+        }
+
+        function onOpen(event)
+        {
+        }
+
+        function sendMessage(message)
+        {
+            _ws.send("RECEIVE $message " + message);
+        }
+
+        /**
+         * @param {WebSocket} ws
+         * @param {String} message
+         */
+        function onMessage(ws, message)
+        {
+            const splitMsg = message.split(/\s/);
+            handleMessage(ws, splitMsg[0], splitMsg.slice(1, splitMsg.length));
+        }
+
+        /**
+         * @param {WebSocket} ws
+         * @param {String} command
+         * @param {String[]} params
+         * */
+        function handleMessage(ws, command, params)
+        {
+            switch(command)
+            {
+                case "REQUEST": onRequestCommand(ws, params[0]); break;
+                case "WELCOME": onWelcome(ws); break;
+                case "RECEIVE": onAcceptResource(ws, params[0], params.slice(1, params.length).join(' ')); break;
+            }
+        }
+
+        /**
+         * @param {WebSocket} ws
+         * */
+        function onRequestCommand(ws, requestedResource)
+        {
+            switch(requestedResource)
+            {
+                default: ws.send("INVALID"); break;
+                case "$username": ws.send("RECEIVE $username " + _username); break;
+            }
+        }
+
+        /**
+         * @param {WebSocket} ws
+         * */
+        function onAcceptResource(ws, resourceType, resourceContent)
+        {
+            switch(resourceType)
+            {
+                default: ws.send("INVALID"); break;
+                case "$history": onHistoryGot(JSON.parse(resourceContent)); break;
+                case "$message": onMessageGot(JSON.parse(resourceContent)); break;
+            }
+        }
+
+        /**
+         * @param {WebSocket} ws
+         * */
+        function onWelcome(ws)
+        {
+            ws.send("REQUEST $history");
+        }
+
+        function onHistoryGot(history)
+        {
+            sendToElm({
+                id: 1,
+                message: {
+                    username: _username,
+                    history: history,
+                },
+            });
+        }
+
+        function onMessageGot(message)
+        {
+            sendToElm({
+                id: 2,
+                message: message,
+            });
+        }
+        </script>
+    </body>
+</html>
