@@ -100,7 +100,7 @@ viewDisconnected =
 viewConnected : Socket.Viewer -> String -> Html Event
 viewConnected state typedMessage = 
     div[]
-    [   div[] [text ("User: " ++ state.username)]
+    [   div[id "username"] [text ("User: " ++ state.username)]
     ,   div[class "message-container"] (List.map viewMessage state.messages)
     ,   viewInputForm typedMessage
     ]

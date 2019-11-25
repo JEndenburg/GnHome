@@ -175,9 +175,10 @@
                 const username = document.getElementById("username").querySelector("input").value;
                 document.cookie = `username=${username}`;
                 sendSessionData(username);
+                widgetCanvas.username = username;
             }
 
-            function getSessionData()
+            function getUsername()
             {
                 const cookies = document.cookie.split(';');
                 for(let cookie of cookies)
@@ -185,11 +186,15 @@
                     const cookieKVPair = cookie.trim().split('=');
                     if(cookieKVPair[0] == "username")
                     {
-                        sendSessionData(cookieKVPair[1]);
-                        return;
+                        return cookieKVPair[1];
                     }
                 }
-                sendSessionData(null);
+                return null;
+            }
+
+            function getSessionData()
+            {
+                sendSessionData(getUsername());
             }
 
             function deleteSessionData()
@@ -209,7 +214,7 @@
         <script src="/src/widget-canvas.js"></script>
         <script>
             const canvasApp = Elm.WidgetCanvas.init({ node: document.getElementById("widget-canvas") });
-            const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331));
+            const widgetCanvas = new WidgetCanvas(document.querySelector("main"), BigInt(13377331), getUsername());
 
             canvasApp.ports.getWidgetsForUser.subscribe(async () => await getWidgetsForUser(BigInt(13377331)));
             canvasApp.ports.centerView.subscribe(() => widgetCanvas.resetPosition());
