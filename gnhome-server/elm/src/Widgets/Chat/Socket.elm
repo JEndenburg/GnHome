@@ -38,6 +38,7 @@ type Event
 
 
 port receiveSocketMessage : (JSON.Value -> msg) -> Sub msg
+port sendSocketMessage : String -> Cmd msg
 
 
 subscriptions : Sub Event

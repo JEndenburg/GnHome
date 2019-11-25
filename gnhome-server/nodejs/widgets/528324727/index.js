@@ -48,7 +48,6 @@ class ChatWidget extends gnhomeInterface.Widget
      */
     onMessageReceived(ip, message)
     {
-        console.log(message);
         const splitMessage = message.split(/\s/);
         this.handleCommand(ip, splitMessage[0], splitMessage.slice(1, splitMessage.length));
     }
@@ -79,7 +78,23 @@ class ChatWidget extends gnhomeInterface.Widget
         {
             default: currentClient.socket.send("INVALID"); break;
             case "$username": currentClient.username = resourceContent; currentClient.socket.send("WELCOME"); break;
+            case "$message": this.acceptMessage(currentClient, resourceContent); break;
         }
+    }
+
+    acceptMessage(client, message)
+    {
+        const date = new Date();
+        const storedMessage = {
+            author: client.username,
+            timestamp: date.toISOString(),
+            content: message,
+        };
+
+        this._history.push(storedMessage);
+
+        for(let c of this._clients)
+            c.socket.send("RECEIVE $message " + JSON.stringify(storedMessage));
     }
 
     getClientFromIP(ip)

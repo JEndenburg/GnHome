@@ -2,9 +2,9 @@ module Widgets.Chat.Main exposing (..)
 
 import Browser exposing (Document)
 
-import Html exposing (Html, text, div, span)
-import Html.Attributes exposing (class, id)
-import Html.Events
+import Html exposing (Html, text, div, span, form, input)
+import Html.Attributes exposing (class, id, type_, placeholder, required, value)
+import Html.Events exposing (onInput, onSubmit)
 
 import Json.Decode as JSON exposing (field, at, string, list)
 
@@ -12,15 +12,22 @@ import Time exposing (Posix, toYear, toMonth, toDay, toHour, toMinute, toSecond,
 
 import Widgets.Chat.Socket as Socket exposing(Message)
 
-type Model
+type alias Model =
+    {   state : State
+    ,   viewer : Maybe Socket.Viewer
+    ,   typedMessage : String
+    }
+
+type State 
     = Connecting
-    | Connected Socket.Viewer
+    | Connected
     | Disconnected
     | Error
 
 type Event
     = OnReceiveSocketMessage Socket.Event
     | OnSendMessage
+    | OnTypingMessage String
 
 
 main = Browser.document
@@ -32,17 +39,19 @@ main = Browser.document
 
 
 init : JSON.Value -> (Model, Cmd Event)
-init _ = (Connecting, Cmd.none)
+init _ = ({ state = Connecting, viewer = Nothing, typedMessage = "" }, Cmd.none)
 
 view : Model -> Document Event
 view model = 
     {   title = "WebChat!"
     ,   body = 
-        [   case model of
+        [   case model.state of
                 Connecting -> viewConnecting
                 Disconnected -> viewDisconnected
-                Connected viewer -> viewConnected viewer
-                Error -> Debug.todo "Implement Error view"
+                Connected -> case model.viewer of
+                    Just viewer -> viewConnected viewer model.typedMessage
+                    Nothing -> viewError
+                Error -> viewError
         ]
     }
 
@@ -50,11 +59,12 @@ update : Event -> Model -> (Model, Cmd Event)
 update event model =
     case event of
         OnReceiveSocketMessage socketEvent -> case Socket.update socketEvent of
-            Socket.Connected viewer -> (Connected viewer, Cmd.none)
-            Socket.Disconnected -> (Disconnected, Cmd.none)
+            Socket.Connected viewer -> ({ model | state = Connected, viewer = Just viewer }, Cmd.none)
+            Socket.Disconnected -> ({ model | state = Disconnected }, Cmd.none)
             Socket.ReceivedMessage message -> (appendMessageToHistory message model, Cmd.none)
             Socket.Invalid -> (model, Cmd.none)
-        OnSendMessage -> Debug.todo "Implement sending message"
+        OnSendMessage -> ({model | typedMessage = ""}, Socket.sendSocketMessage model.typedMessage)
+        OnTypingMessage message -> ({model | typedMessage = message}, Cmd.none)
 
 subscriptions : Model -> Sub Event
 subscriptions model = Sub.batch
@@ -64,9 +74,19 @@ subscriptions model = Sub.batch
 
 appendMessageToHistory : Socket.Message -> Model -> Model
 appendMessageToHistory message model =
-    case model of
-        Connected viewer -> Connected { viewer | messages = (viewer.messages ++ [message]) }
-        _ -> Error
+    case model.state of
+        Connected ->
+            let
+                (maybeViewer) = model.viewer
+            in
+                case maybeViewer of
+                    Just viewer -> 
+                        let
+                            (updatedViewer) = { viewer | messages = (List.append viewer.messages [message]) }
+                        in
+                            { model | viewer = Just updatedViewer }
+                    Nothing -> model
+        _ -> { model | state = Error }
     
 
 viewConnecting : Html Event
@@ -77,18 +97,19 @@ viewDisconnected : Html Event
 viewDisconnected = 
     div[] [text "Failed!"]
 
-viewConnected : Socket.Viewer -> Html Event
-viewConnected state = 
+viewConnected : Socket.Viewer -> String -> Html Event
+viewConnected state typedMessage = 
     div[]
     [   div[] [text ("User: " ++ state.username)]
-    ,   div[] (List.map viewMessage state.messages)
+    ,   div[class "message-container"] (List.map viewMessage state.messages)
+    ,   viewInputForm typedMessage
     ]
 
 viewMessage : Message -> Html Event
 viewMessage message = 
-    div[]
-    [   div[] [text (message.author ++ " sent:")]
-    ,   div[] [text message.content]
+    div[class "message"]
+    [   div[class "author"] [text (message.author ++ " sent:")]
+    ,   div[class "content"] [text message.content]
     ,   viewTimestamp message.time
     ]
 
@@ -122,3 +143,14 @@ monthToInt month =
         Oct -> 10
         Nov -> 11
         Dec -> 12
+
+viewInputForm : String -> Html Event
+viewInputForm typedMessage = 
+    form [onSubmit OnSendMessage]
+    [   input [type_ "text", value typedMessage, placeholder "Enter a message here...", onInput OnTypingMessage, required True] []
+    ,   input [type_ "submit", value "Send"] []
+    ]
+
+viewError : Html Event
+viewError = 
+    div[id "error"] [text "Something went wrong."]
