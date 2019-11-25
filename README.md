@@ -3,6 +3,20 @@ GnHome
 A browser home application featuring widgets, turning your homepage into a sort-of desktop.
 
 ### How do I make it work?
+First, run `npm install` within the `gnhome-server/nodejs` folder. Then set up a MariaDB database and add a file called `mariadb.credentials` in the `gnhome-server/nodejs/lib/api` folder. This should be a file with JSON contents, containing a `host` string, a `port` integer, a `user` string, a `password` string, a `connectionLimit` integer and a `database` string.
+
+e.g.
+`
+{
+    "host": "localhost",
+    "port": 8001,
+    "user": "myUserName",
+    "password": "myPassword",
+    "connectionLimit": 5,
+    "database": "myDatabaseName"
+}
+`
+
 Run the node application (app.js) within the `gnhome-server/nodejs` folder. You shouldn't need any of the other folders except for the `gnhome-interface` one.
 
 You might need to use `npm link` within the `gnhome-interface` folder and then use `npm link gnhome-interface` within the `gnhome-server/nodejs` folder.
