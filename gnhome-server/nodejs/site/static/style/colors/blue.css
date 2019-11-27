@@ -1,0 +1,30 @@
+:root
+{
+    --primary-color: rgb(35, 37, 150);
+    --primary-border-color: rgb(50, 42, 73);
+    --primary-unfocus-color: rgb(113, 121, 196);
+
+    --nav-color: rgb(73, 68, 62);
+    --nav-border-color: rgb(54, 52, 49);
+    --nav-item-color: rgb(85, 79, 71);
+    --nav-item-hover-color: rgb(114, 103, 89);
+    --nav-item-disabled-color: rgb(58, 58, 57);
+
+    --background-color: rgb(103, 101, 126);
+    --blocker-color: rgba(44, 44, 59, 0.5);
+    --widget-background-color: rgb(170, 186, 253);
+
+    --main-text-color: rgb(28, 58, 30);
+    --header-nav-text-color: rgb(235, 255, 232);
+    --darkmode-affected-text-color: rgb(8, 23, 71);
+    --disabled-text-color: rgb(103, 103, 112);
+
+    --repo-table-border-color: rgb(55, 54, 109);
+    --repo-table-color-header: rgb(41, 25, 129);
+    --repo-table-text-color-header: rgb(208, 219, 255);
+    --repo-table-color-even: rgb(187, 186, 194);
+    --repo-table-color-odd: rgb(158, 161, 173);
+
+    --toggle-active-color: rgb(153, 255, 153);
+    --toggle-inactive-color: rgb(255, 137, 137);
+}

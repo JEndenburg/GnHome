@@ -7,7 +7,7 @@ class ChatWidget extends gnhomeInterface.Widget
     {
         const port = 9000;
         const schema = new gnhomeInterface.Widget.Schema([], [], []);
-        super(528324727, "WebChat", "0.0.1", "Find new friends, talk with old ones.", new gnhomeInterface.Widget.Size(500, 400), schema);
+        super(1234, "WebChat", "0.0.1", "Find new friends, talk with old ones.", new gnhomeInterface.Widget.Size(500, 400), schema);
 
         this._clients = [];
         this._history = [];
