@@ -17,6 +17,7 @@ e.g.
 }
 `
 
+Then run the `gnhome-server/compileElm.sh` (you may need to create a `gnhome-server\nodejs\site\static\src\elm` folder first!) to compile and move the elm code.
 Run the node application (app.js) within the `gnhome-server/nodejs` folder. You shouldn't need any of the other folders except for the `gnhome-interface` one.
 
 You might need to use `npm link` within the `gnhome-interface` folder and then use `npm link gnhome-interface` within the `gnhome-server/nodejs` folder.
