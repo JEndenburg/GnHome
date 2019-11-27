@@ -5,8 +5,8 @@ A browser home application featuring widgets, turning your homepage into a sort-
 ### How do I make it work?
 First, run `npm install` within the `gnhome-server/nodejs` folder. Then set up a MariaDB database and add a file called `mariadb.credentials` in the `gnhome-server/nodejs/lib/api` folder. This should be a file with JSON contents, containing a `host` string, a `port` integer, a `user` string, a `password` string, a `connectionLimit` integer and a `database` string.
 
-e.g.
-`
+e.g.:
+```json
 {
     "host": "localhost",
     "port": 8001,
@@ -15,7 +15,7 @@ e.g.
     "connectionLimit": 5,
     "database": "myDatabaseName"
 }
-`
+```
 
 Then run the `gnhome-server/compileElm.sh` (you may need to create a `gnhome-server\nodejs\site\static\src\elm` folder first!) to compile and move the elm code.
 Run the node application (app.js) within the `gnhome-server/nodejs` folder. You shouldn't need any of the other folders except for the `gnhome-interface` one.
