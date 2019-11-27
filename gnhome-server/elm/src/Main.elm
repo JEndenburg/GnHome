@@ -17,6 +17,8 @@ import Page.Login
 
 import Page.Error.NotFound
 
+-- If you're more familiar with OO, a "type alias" is the nearest thing you've got to a "state".
+-- Despite that, within functional languages, there are (generally) no variables.
 type alias Model = 
     {   route : Route
     ,   navKey : Navigator.Key
@@ -24,7 +26,8 @@ type alias Model =
     ,   session : Session
     }
 
-type Page
+-- If you're more familiar with OO coding, see a "type" as an enum that can carry extra properties.
+type Page -- The page type effectively acts as a storage for the current "submodel" we're using, since the main model itself cannot directly account for all different submodels at once.
     = NotFound
     | Dashboard Page.Dashboard.Model
     | WidgetRepo Page.WidgetRepo.Model
@@ -32,7 +35,7 @@ type Page
     | Settings Page.Settings.Model
     | Login Page.Login.Model
 
-type Event
+type Event -- Likewise, the update and view functions cannot account for any and all types of events that may occur within submodel updates/views. Therefore all events need to be mapped to a higher "supertype" event.
     = UrlChanged Url.Url
     | UrlRequested Browser.UrlRequest
     | BasePageEvent Page.Event
@@ -53,7 +56,9 @@ main = Browser.application
     ,   onUrlRequest = UrlRequested
     }
 
-
+-- If you're more familiar with OO programming, you could see this as "(Model, Cmd<Event>) initialModel(null, Url url, Key key)"
+-- But it's better to see this as a series of functions with one parameter calling one after the other.
+-- It's even better not to think in OO terms.
 initialModel : () -> Url.Url -> Navigator.Key -> (Model, Cmd Event)
 initialModel _ url key =
     let
