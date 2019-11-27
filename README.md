@@ -17,6 +17,35 @@ e.g.:
 }
 ```
 
+The database should contain two tables:
+`user`:
+```
++------------+------------------------------+------+-----+---------+-------+
+| Field      | Type                         | Null | Key | Default | Extra |
++------------+------------------------------+------+-----+---------+-------+
+| id         | bigint(20) unsigned zerofill | NO   | PRI | NULL    |       |
+| first_name | varchar(50)                  | NO   |     | NULL    |       |
+| last_name  | varchar(100)                 | NO   |     | NULL    |       |
+| mail       | varchar(100)                 | NO   |     | NULL    |       |
+| pass       | varchar(256)                 | NO   |     | NULL    |       |
+| salt       | varchar(256)                 | NO   |     | NULL    |       |
+| theme      | int(11)                      | YES  |     | 0       |       |
++------------+------------------------------+------+-----+---------+-------+
+```
+`widget_state`:
+```
++-----------+------------------------------+------+-----+---------+-------+
+| Field     | Type                         | Null | Key | Default | Extra |
++-----------+------------------------------+------+-----+---------+-------+
+| id        | bigint(20) unsigned zerofill | NO   | PRI | NULL    |       |
+| owner_id  | bigint(20) unsigned zerofill | NO   | MUL | NULL    |       |
+| widget_id | bigint(20) unsigned zerofill | NO   |     | NULL    |       |
+| pos_x     | float                        | NO   |     | NULL    |       |
+| pos_y     | float                        | NO   |     | NULL    |       |
+| pos_z     | float                        | NO   |     | NULL    |       |
++-----------+------------------------------+------+-----+---------+-------+
+```
+
 Then run the `gnhome-server/compileElm.sh` (you may need to create a `gnhome-server\nodejs\site\static\src\elm` folder first!) to compile and move the elm code.
 Run the node application (app.js) within the `gnhome-server/nodejs` folder. You shouldn't need any of the other folders except for the `gnhome-interface` one.
 
